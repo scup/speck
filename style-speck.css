@@ -1,0 +1,23 @@
+.highlight-header{
+  overflow: hidden;
+	background-color: #fe316a;
+}
+
+.glow{
+  position: absolute;
+	left: 0px;
+	top: 0px;
+}
+
+.logo{
+	background-image: url(images/logo-speck.png);
+  width: 400px;
+}
+
+
+.glow{
+    position: absolute;
+    left: -1000px;
+    top: -890px;
+		transition: 6s linear;
+}

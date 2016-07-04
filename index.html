@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>Speck.</title>
+	<link rel="stylesheet" href="reset.css">
+	<link rel="stylesheet" href="common.css">
+	<link rel="stylesheet" href="style-speck.css">
+	<link rel="dynamic-stylesheet" href="d-style.css">
+    <link href='https://fonts.googleapis.com/css?family=Open+Sans:400,300,600,700' rel='stylesheet' type='text/css'>
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+</head>
+<body>
+<header>
+	<div class="highlight-header">
+		<canvas id="bg" width="300" height="300"></canvas>
+		<div class="logo"></div>
+	</div>
+</header>
+
+    <section id="content">
+
+	    <p align="center">
+	      Create your domain entities with reactive validation based on React propTypes.
+	    </p>
+
+			<p align="center">
+				<a href="https://github.com/scup/speck">https://github.com/scup/speck</a>
+			</p>
+
+	    <h1 id="Getting Started">Getting Started</h1>
+
+	    <h3 id="Pipe">Installing</h3>
+      <pre>
+      <code>
+$ npm install react-entity
+      </code>
+      </pre>
+
+
+      <h3 id="Sample Entities">Sample Entities</h3>
+        <pre>
+        <code>
+import { PropTypes } from 'react';
+import <b>Speck</b> from '<b>speck-entity</b>';
+
+class MyEntity extends Speck {
+  static SCHEMA = {
+    field: PropTypes.string,
+    otherField: {
+      validator: PropTypes.number,
+      defaultValue: 10
+    }
+  }
+}
+
+class FatherEntity extends Speck {
+  static SCHEMA = {
+    children: {
+      validator: PropTypes.arrayOf(PropTypes.instanceOf(MyEntity)),
+      type: MyEntity
+    }
+  }
+}
+        </code>
+        </pre>
+
+
+
+			<h3 id="Get default values">Get default values</h3>
+        <pre>
+        <code>
+const niceInstance = new MyEntity();
+console.log(niceInstance.fetch());
+// { field: undefined, otherField: 10 }
+console.log(niceInstance.errors);
+// {}
+        </code>
+        </pre>
+
+
+
+
+			<h3 id="Validations">Validations</h3>
+        <pre>
+        <code>
+const buggedInstance = new MyEntity({ field: 10, otherField: 'value' });
+console.log(buggedInstance.fetch()); // { field: 10, otherField: 'value' }
+console.log(buggedInstance.errors);
+/* or buggedInstance.getErrors() -- but... getErrors also includes children errors
+  {
+    field: {
+      errors: [ 'Invalid undefined `field` of type `number` supplied to `MyEntityEntity`, expected `string`.' ]
+    },
+    otherField: {
+      errors: [ 'Invalid undefined `otherField` of type `string` supplied to `MyEntityEntity`, expected `number`.' ]
+    }
+  }
+*/
+        </code>
+        </pre>
+
+
+
+
+
+			<h3 id="Validate on change value">Validate on change value</h3>
+        <pre>
+        <code>
+const otherInstance = new MyEntity({ field: 'myString' });
+console.log(otherInstance.errors); // {}
+console.log(otherInstance.valid); // true
+
+otherInstance.field = 1;
+console.log(otherInstance.errors); // {field: { errors: [ 'Invalid undefined `field` of type `number` supplied to `MyEntityEntity`, expected `string`.' ] }}
+console.log(otherInstance.valid); // false
+        </code>
+        </pre>
+
+
+
+			<h3 id="Parse children to Entity">Parse children to Entity</h3>
+        <pre>
+        <code>
+const fatherInstance = new FatherEntity({
+  children: [{
+    field: 'A',
+    otherField: 2
+  }, {
+    field: 'B',
+    otherField: 3
+  }]
+})
+console.log(fatherInstance.children[0]); //An instance of MyEntity
+console.log(fatherInstance.children[1].fetch());
+//{ field: 'B', otherField: 3 }
+        </code>
+        </pre>
+
+
+
+			<h3 id="Clean unexpected values">Clean unexpected values</h3>
+        <pre>
+        <code>
+const anotherInstance = new MyEntity({ field: 'myString', fake: 'fake' });
+console.log(anotherInstance.fetch()); // { field: 'myString', otherField: 10 }
+        </code>
+        </pre>
+
+    </section>
+
+		<script src="js/dss.min.js"></script>
+
+	<script type="text/javascript">
+	const BGCOLOR = '#ff3964';
+  const FGCOLOR = '#ff9034';
+	const BGRGB = 'rgba(255,144,52,0)';
+	</script>
+	<script type="text/javascript" src="js/animation/lib/Stage.js"></script>
+	<script type="text/javascript" src="js/animation/lib/BlobAnimation.js"></script>
+	<script type="text/javascript" src="js/animation/animation.js"></script>
+	<script type="text/javascript" src="js/animation/TweenLite.min.js"></script>
+	<script type="text/javascript" src="js/animation/bulbs.js"></script>
+</body>
+</html>

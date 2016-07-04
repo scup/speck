@@ -1,0 +1,12 @@
+.highlight-header{
+	height: ||windowHeight||px;
+	opacity: ||(100-(scrollY*.5))/100||;
+}
+
+
+.logo{
+	position: absolute;
+	top: ||(windowHeight/2)-(windowHeight/3)||px;
+	right: 20%;
+	z-index: 9999;
+}
