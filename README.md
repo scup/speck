@@ -10,6 +10,7 @@ This package let you create entities with schema validation based on React PropT
 
 ### Installing
     $ npm install react-entity
+    
 
 ### Using
 
