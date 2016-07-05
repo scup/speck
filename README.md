@@ -9,8 +9,8 @@ This package let you create entities with schema validation based on React PropT
 * [Examples](#examples)
 
 ### Installing
-    $ npm install react-entity
-    
+    $ npm install speck-entity
+
 
 ### Using
 
