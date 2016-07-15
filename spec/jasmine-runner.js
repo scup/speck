@@ -1,6 +1,4 @@
-require("babel/register")({
-  stage: 1
-});
+require("babel-core/register")();
 
 var Jasmine = require('jasmine');
 var SpecReporter = require('jasmine-spec-reporter');
