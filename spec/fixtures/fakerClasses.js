@@ -36,84 +36,87 @@ class ProductEntity extends Speck {
   }
 }
 
-class ProductEntityCollection extends SpeckCollection {
-  static TYPE = ProductEntity;
 
-  getSortedItemsByName() {
-    return this.sortBy('name');
-  }
-}
+console.log(SpeckCollection);
 
-class Validatable extends Speck {
-  static SCHEMA = {
-    field: function (data, propName, entityName){
-      if(data[propName] !== 'valid'){
-        return `${propName} wrong on ${entityName}`;
-      }
-    },
-    otherField: {
-      validator: function (data, propName, entityName){
-        if(data[propName] !== 'valid'){
-          return new Error(`${propName} wrong on ${entityName}`);
-        }
-      },
-      defaultValue: 'bla'
-    }
-  }
-}
-
-class ChildrenEntity  extends Speck {
-  static SCHEMA = {
-    foo: fooValidator
-  }
-}
-
-class FatherEntity extends Speck {
-  static SCHEMA = {
-    foo: {
-      validator: fooValidator,
-      defaultValue: 'bar'
-    }, children: {
-      validator: function (){},
-      type: ChildrenEntity
-    }
-  }
-}
-
-class FatherWithObjectEntity extends Speck {
-  static SCHEMA = {
-    children: {
-      type: ChildrenEntity,
-      validator: alwaysTruth,
-      builder: (data, Type) => {
-        return Object.keys(data).reduce((result, key) => {
-          result[key] = new Type(data[key]);
-          return result;
-        },{})
-      }
-    }
-  }
-}
-
-class ChildWithChildArray extends Speck {
-    static SCHEMA = {
-        name: PropTypes.string,
-        children: {
-            validator: PropTypes.arrayOf(PropTypes.instanceOf(ChildWithChildArray)),
-            type: ChildWithChildArray
-        }
-    }
-}
-
-export default {
-  defaultField,
-  defaultValue,
-  FakeEntityWithDefault,
-  ProductEntity,
-  ProductEntityCollection,
-  Validatable,
-  ChildrenEntity,
-  FatherEntity,
-  FatherWithObjectEntity,
-  ChildWithChildArray
-}
+// class ProductEntityCollection extends SpeckCollection {
+//   static TYPE = ProductEntity;
+//
+//   getSortedItemsByName() {
+//     return this.sortBy('name');
+//   }
+// }
+//
+// class Validatable extends Speck {
+//   static SCHEMA = {
+//     field: function (data, propName, entityName){
+//       if(data[propName] !== 'valid'){
+//         return `${propName} wrong on ${entityName}`;
+//       }
+//     },
+//     otherField: {
+//       validator: function (data, propName, entityName){
+//         if(data[propName] !== 'valid'){
+//           return new Error(`${propName} wrong on ${entityName}`);
+//         }
+//       },
+//       defaultValue: 'bla'
+//     }
+//   }
+// }
+//
+// class ChildrenEntity  extends Speck {
+//   static SCHEMA = {
+//     foo: fooValidator
+//   }
+// }
+//
+// class FatherEntity extends Speck {
+//   static SCHEMA = {
+//     foo: {
+//       validator: fooValidator,
+//       defaultValue: 'bar'
+//     }, children: {
+//       validator: function (){},
+//       type: ChildrenEntity
+//     }
+//   }
+// }
+//
+// class FatherWithObjectEntity extends Speck {
+//   static SCHEMA = {
+//     children: {
+//       type: ChildrenEntity,
+//       validator: alwaysTruth,
+//       builder: (data, Type) => {
+//         return Object.keys(data).reduce((result, key) => {
+//           result[key] = new Type(data[key]);
+//           return result;
+//         },{})
+//       }
+//     }
+//   }
+// }
+//
+// class ChildWithChildArray extends Speck {
+//     static SCHEMA = {
+//         name: PropTypes.string,
+//         children: {
+//             validator: PropTypes.arrayOf(PropTypes.instanceOf(ChildWithChildArray)),
+//             type: ChildWithChildArray
+//         }
+//     }
+// }
+//
+// export default {
+//   defaultField,
+//   defaultValue,
+//   FakeEntityWithDefault,
+//   ProductEntity,
+//   ProductEntityCollection,
+//   Validatable,
+//   ChildrenEntity,
+//   FatherEntity,
+//   FatherWithObjectEntity,
+//   ChildWithChildArray
+// }

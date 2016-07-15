@@ -140,6 +140,8 @@ class Speck {
 }
 
 Speck.SpeckCollection = SpeckCollection;
-Speck.Types = { objectsByKey }
+Speck.Types = { objectsByKey };
+exports.SpeckCollection = SpeckCollection;
+exports.Types = { objectsByKey };
 
 export default Speck;
