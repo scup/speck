@@ -16,8 +16,7 @@ import {
 
 describe('Speck', function (){
   it('should merge with default data', function (){
-const fakeEntity = new FakeEntityWithDefault();
-
+    const fakeEntity = new FakeEntityWithDefault();
     expect(fakeEntity[defaultField]).toBe(defaultValue);
   });
 
