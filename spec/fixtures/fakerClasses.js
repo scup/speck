@@ -106,6 +106,32 @@ class ChildWithChildArray extends Speck {
     }
 }
 
+class FakeEntityWithExcludeContext extends Speck {
+    static SCHEMA = {
+        id: PropTypes.number.isRequired,
+        requiredProp1: PropTypes.number.isRequired,
+        requiredProp2: PropTypes.number.isRequired,
+        requiredProp3: PropTypes.number.isRequired
+    }
+
+    static CONTEXTS = {
+      create: { exclude: [ 'id', 'requiredProp3' ] },
+      edit: { exclude: [ 'id', 'requiredProp2' ] }
+    }
+}
+
+class FakeEntityWithIncludeContext extends Speck {
+    static SCHEMA = {
+        id: PropTypes.number.isRequired,
+        requiredProp1: PropTypes.number.isRequired,
+        requiredProp2: PropTypes.number.isRequired,
+        requiredProp3: PropTypes.number.isRequired
+    }
+
+    static CONTEXTS = {
+      create: { include: [ 'requiredProp1', 'requiredProp2' ] }
+    }
+}
 
 exports.defaultField = defaultField;
 exports.defaultValue = defaultValue;
@@ -117,3 +143,5 @@ exports.ChildrenEntity = ChildrenEntity;
 exports.FatherEntity = FatherEntity;
 exports.FatherWithObjectEntity = FatherWithObjectEntity;
 exports.ChildWithChildArray = ChildWithChildArray;
+exports.FakeEntityWithExcludeContext = FakeEntityWithExcludeContext;
+exports.FakeEntityWithIncludeContext = FakeEntityWithIncludeContext;

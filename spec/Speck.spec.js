@@ -11,7 +11,9 @@ import {
   ChildrenEntity,
   FatherEntity,
   FatherWithObjectEntity,
-  ChildWithChildArray
+  ChildWithChildArray,
+  FakeEntityWithExcludeContext,
+  FakeEntityWithIncludeContext
 } from './fixtures/fakerClasses';
 
 describe('Speck', function (){
@@ -230,6 +232,36 @@ describe('Speck', function (){
       expect(childWithChildArray.constructor).toBe(ChildWithChildArray);
       expect(childWithChildArray.children[0].constructor).toBe(ChildWithChildArray);
     });
+  });
 
+  describe('Contextual validation', function (){
+
+    it('it should set contexts excluded', () => {
+      const fakeEntityWithContext = new FakeEntityWithExcludeContext({
+        name: 'Node1'
+      });
+
+      const contextValidated = fakeEntityWithContext.validateContext('create');
+
+      expect(fakeEntityWithContext.constructor).toBe(FakeEntityWithExcludeContext);
+      expect(contextValidated.id).toBeUndefined();
+      expect(contextValidated.requiredProp1).not.toBeUndefined();
+      expect(contextValidated.requiredProp2).not.toBeUndefined();
+      expect(contextValidated.requiredProp3).toBeUndefined();
+    });
+
+    it('it should set contexts include', () => {
+      const fakeEntityWithContext = new FakeEntityWithIncludeContext({
+        name: 'Node1'
+      });
+
+      const contextValidated = fakeEntityWithContext.validateContext('create');
+
+      expect(fakeEntityWithContext.constructor).toBe(FakeEntityWithIncludeContext);
+      expect(contextValidated.id).toBeUndefined();
+      expect(contextValidated.requiredProp1).not.toBeUndefined();
+      expect(contextValidated.requiredProp2).not.toBeUndefined();
+      expect(contextValidated.requiredProp3).toBeUndefined();
+    });
   });
 });
