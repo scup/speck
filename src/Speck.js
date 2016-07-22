@@ -21,6 +21,11 @@ class Speck {
       enumerable: false
     });
 
+    Object.defineProperty(this, 'contexts', {
+      value: this.constructor.CONTEXTS,
+      enumerable: false
+    });
+
     Object.defineProperty(this, 'childrenEntities', {
       value: Object.keys(this.constructor.SCHEMA).filter((field) => !!this.constructor.SCHEMA[field].type),
       enumerable: false
@@ -137,6 +142,29 @@ class Speck {
     return errors;
   }
 
+  validateContext(context){
+    if(!this.contexts[context]) return this.errors;
+
+    let validation;
+    if(this.contexts[context].exclude && Object.keys(this.contexts[context].exclude).length > 0){
+      validation = (error)=>{
+        return this.contexts[context].exclude.find(exclude => exclude === error) === undefined;
+      };
+    }
+
+    if(this.contexts[context].include && Object.keys(this.contexts[context].include).length > 0){
+      validation = (error)=>{
+        return this.contexts[context].include.find(include => include === error) !== undefined;
+      };
+    }
+
+    const errors = Object.keys(this.errors).filter(validation);
+
+    return errors.reduce((acc,e)=>{
+      acc[e] = this.errors[e];
+      return acc;
+    },{});
+  }
 }
 
 Speck.SpeckCollection = SpeckCollection;
