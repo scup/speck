@@ -99,3 +99,26 @@ To understand the validators [React PropTypes](https://facebook.github.io/react/
 ### Well known issues
   - Create helpers for relationships validations(Like, mininum, maximum)
   - Create identifier and equal comparison
+
+### Contextual validation
+```javascript
+      class FakeEntityWithIncludeContext extends Speck {
+          static SCHEMA = {
+              id: PropTypes.number.isRequired,
+              requiredProp1: PropTypes.number.isRequired,
+              requiredProp2: PropTypes.number.isRequired,
+              requiredProp3: PropTypes.number.isRequired
+          }
+
+     static CONTEXTS = {
+       create: { include: [ 'requiredProp1', 'requiredProp2' ] },
+       edit: { exclude: [ 'requiredProp3' ] },
+     }
+ }
+```
+  Each context (create and edit in example above), could have _include_ property OR  _exclude_, the _include_ property receives the properties that will be validated in this context,
+  and the _exclude_ property represents the properties that will be ignored on validation.
+
+  In the example, the create context, will only check the 'requiredProp1' and 'requiredProp2'  fields, and the edit context will check 'requiredProp1', 'requiredProp2'  and 'id' properties.
+
+  You **can't** combine include and exclude in the same context definition
