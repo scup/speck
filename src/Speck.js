@@ -1,3 +1,4 @@
+import SpeckValidatorAdapters from './validatorAdapters';
 import SpeckCollection from './SpeckCollection';
 import objectsByKey from './typeBuilders/objectsByKey';
 
@@ -171,5 +172,6 @@ Speck.SpeckCollection = SpeckCollection;
 Speck.Types = { objectsByKey };
 exports.SpeckCollection = SpeckCollection;
 exports.Types = { objectsByKey };
+exports.ValidatorAdapter = SpeckValidatorAdapters;
 
 export default Speck;

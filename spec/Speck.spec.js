@@ -1,5 +1,6 @@
 import Faker from 'faker';
-import Speck, { SpeckCollection } from '../src/Speck';
+import Joi from 'joi';
+import Speck, { SpeckCollection, ValidatorAdapter } from '../src/Speck';
 
 import {
   defaultField,
@@ -263,5 +264,38 @@ describe('Speck', function (){
       expect(contextValidated.requiredProp2).not.toBeUndefined();
       expect(contextValidated.requiredProp3).toBeUndefined();
     });
+  });
+
+  describe('Joi Validator', function (){
+    let myData,
+        joiAdapter;
+
+    beforeEach(() => {
+      joiAdapter = ValidatorAdapter('joi', Joi);
+      myData = {
+        myStringProp: 'Some text',
+        httpURLProp: 'http://mysite.com',
+        httpsURLProp: 'https://mysite.com',
+        ftpURLProp: 'ftp://myftp.com',
+      };
+    });
+
+    it('should validate if value is equal string', () => {
+      const myStringValidator = joiAdapter(Joi.string());
+      expect(myStringValidator(myData, "myStringProp")).toBeUndefined();
+    });
+
+    it('should validate if string have URL format', () => {
+      const myURLValidator = joiAdapter( Joi.string().uri({ scheme: [
+        'http',
+        'https'
+      ]}) );
+      expect(myURLValidator(myData, 'httpURLProp')).toBeUndefined();
+      expect(myURLValidator(myData, 'httpsURLProp')).toBeUndefined();
+      const expectedMsg = 'JoiValidationError: child "ftpURLProp" fails '+
+                          'because ["ftpURLProp" must be a valid uri with a '+
+                          'scheme matching the http|https pattern]';
+      expect(myURLValidator(myData, 'ftpURLProp').message).toBe(expectedMsg);
+    })
   });
 });
