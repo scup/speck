@@ -37,6 +37,7 @@
     "jasmine": "^2.4.1",
     "jasmine-core": "^2.4.1",
     "jasmine-spec-reporter": "^2.5.0",
+    "joi": "^9.0.4",
     "nodemon": "^1.9.2",
     "react": "^0.14.3",
     "sinon": "^1.17.2"
