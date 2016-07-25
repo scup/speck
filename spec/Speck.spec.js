@@ -1,6 +1,6 @@
 import Faker from 'faker';
 import Joi from 'joi';
-import Speck, { SpeckCollection, ValidatorAdapter } from '../src/Speck';
+import {Entity, Collection, validatorAdapter } from '../src/Speck';
 
 import {
   defaultField,
@@ -271,7 +271,7 @@ describe('Speck', function (){
         joiAdapter;
 
     beforeEach(() => {
-      joiAdapter = ValidatorAdapter('joi', Joi);
+      joiAdapter = validatorAdapter('joi', Joi);
       myData = {
         myStringProp: 'Some text',
         httpURLProp: 'http://mysite.com',

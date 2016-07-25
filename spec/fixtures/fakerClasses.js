@@ -1,7 +1,7 @@
 import Faker from 'faker';
 import { PropTypes } from 'react';
 
-import Speck, { SpeckCollection } from '../../src/Speck';
+import Speck, { Collection } from '../../src/Speck';
 
 const defaultField = Faker.name.firstName();
 const defaultValue = Faker.name.firstName();
@@ -37,7 +37,7 @@ class ProductEntity extends Speck {
 }
 
 
-class ProductEntityCollection extends SpeckCollection {
+class ProductEntityCollection extends Collection {
   static TYPE = ProductEntity;
 
   getSortedItemsByName() {

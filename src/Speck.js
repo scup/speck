@@ -168,10 +168,16 @@ class Speck {
   }
 }
 
-Speck.SpeckCollection = SpeckCollection;
 Speck.Types = { objectsByKey };
-exports.SpeckCollection = SpeckCollection;
-exports.Types = { objectsByKey };
-exports.ValidatorAdapter = SpeckValidatorAdapters;
+
+Speck.Types = Speck.Types;
+Speck.Collection = SpeckCollection;
+Speck.Types = { objectsByKey };
+Speck.validatorAdapter = SpeckValidatorAdapters;
+
+export const Entity = Speck;
+export const Types =  Speck.Types;
+export const Collection = Speck.Collection;
+export const validatorAdapter = Speck.validatorAdapter;
 
 export default Speck;
