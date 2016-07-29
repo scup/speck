@@ -126,3 +126,33 @@ To understand the validators [React PropTypes](https://facebook.github.io/react/
   In the example, the create context, will only check the 'requiredProp1' and 'requiredProp2'  fields, and the edit context will check 'requiredProp1', 'requiredProp2'  and 'id' properties.
 
   You **can't** combine include and exclude in the same context definition
+
+##Custom validation
+  You can validate your entity adding the property in _fields_ and setting the new validator
+  ```javascript
+    class Entity extends Speck {
+      static SCHEMA = {
+        id: PropTypes.number.isRequired,
+        requiredProp1: PropTypes.number.isRequired
+      }
+
+      static CONTEXTS = {
+        create: {
+          fields: {
+            requiredProp1: (obj, field) => {
+              if(obj[field] === -1) return new Error('Error -1');
+            }
+          }
+        }
+      }
+    }
+
+    const entity = new Entity({
+      id: 1,
+      requiredProp1: -1
+    });
+
+    const contextValidated = entity.validateContext('create');
+    console.log(entity.errors.requiredProp1); // undefined
+    console.log(contextValidated.requiredProp1); // { errors: [Error: Error -1] }
+  ```
