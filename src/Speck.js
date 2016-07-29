@@ -159,10 +159,19 @@ class Speck {
       };
     }
 
-    const errors = Object.keys(this.errors).filter(validation);
+    const contextErrors = {...this.errors};
+    if(this.contexts[context].fields){
+      Object.keys(this.contexts[context].fields).forEach((field) => {
+        const result = this.contexts[context].fields[field](this, field, this.constructor.name);
+        if(result) contextErrors[field] = {errors: result};
+        else contextErrors[field] = undefined;
+      });
+    }
+
+    const errors = Object.keys(contextErrors).filter(validation);
 
     return errors.reduce((acc,e)=>{
-      acc[e] = this.errors[e];
+      acc[e] = contextErrors[e];
       return acc;
     },{});
   }

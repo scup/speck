@@ -14,7 +14,8 @@ import {
   FatherWithObjectEntity,
   ChildWithChildArray,
   FakeEntityWithExcludeContext,
-  FakeEntityWithIncludeContext
+  FakeEntityWithIncludeContext,
+  FakeEntityWithCustomValidationWithContext
 } from './fixtures/fakerClasses';
 
 describe('Speck', function (){
@@ -263,6 +264,22 @@ describe('Speck', function (){
       expect(contextValidated.requiredProp1).not.toBeUndefined();
       expect(contextValidated.requiredProp2).not.toBeUndefined();
       expect(contextValidated.requiredProp3).toBeUndefined();
+    });
+
+    it('it should set custom validations', () => {
+      const fakeEntityWithContext = new FakeEntityWithCustomValidationWithContext({
+        id: 1,
+        requiredProp1: -1
+      });
+
+      const contextValidated = fakeEntityWithContext.validateContext('create');
+
+      expect(fakeEntityWithContext.constructor).toBe(FakeEntityWithCustomValidationWithContext);
+      expect(contextValidated.id).toBeUndefined();
+
+      expect(contextValidated.requiredProp1).not.toBeUndefined();
+      expect(fakeEntityWithContext.errors.requiredProp1).toBeUndefined();
+
     });
   });
 
