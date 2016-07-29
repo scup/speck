@@ -133,6 +133,23 @@ class FakeEntityWithIncludeContext extends Speck {
     }
 }
 
+class FakeEntityWithCustomValidationWithContext extends Speck {
+  static SCHEMA = {
+    id: PropTypes.number.isRequired,
+    requiredProp1: PropTypes.number.isRequired
+  }
+
+  static CONTEXTS = {
+    create: {
+      fields: {
+        requiredProp1: (obj, field) => {
+          if(obj[field] === -1) return new Error('Error -1');
+        }
+      }
+    }
+  }
+}
+
 exports.defaultField = defaultField;
 exports.defaultValue = defaultValue;
 exports.FakeEntityWithDefault = FakeEntityWithDefault;
@@ -145,3 +162,4 @@ exports.FatherWithObjectEntity = FatherWithObjectEntity;
 exports.ChildWithChildArray = ChildWithChildArray;
 exports.FakeEntityWithExcludeContext = FakeEntityWithExcludeContext;
 exports.FakeEntityWithIncludeContext = FakeEntityWithIncludeContext;
+exports.FakeEntityWithCustomValidationWithContext = FakeEntityWithCustomValidationWithContext;
