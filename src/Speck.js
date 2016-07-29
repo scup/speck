@@ -146,7 +146,7 @@ class Speck {
   validateContext(context){
     if(!this.contexts[context]) return this.errors;
 
-    let validation;
+    let validation = () => true;
     if(this.contexts[context].exclude && Object.keys(this.contexts[context].exclude).length > 0){
       validation = (error)=>{
         return this.contexts[context].exclude.find(exclude => exclude === error) === undefined;
