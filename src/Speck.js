@@ -164,6 +164,7 @@ class Speck {
       Object.keys(this.contexts[context].fields).forEach((field) => {
         const result = this.contexts[context].fields[field](this, field, this.constructor.name);
         if(result) contextErrors[field] = {errors: result};
+        else delete contextErrors[field];
       });
     }
 
