@@ -116,12 +116,16 @@ class Speck {
   }
 
   fetch() {
+    console.log('fetch() will be deprecated, use toJSON().')
+    return this.toJSON();
+  }
+
+  toJSON(){
     let rawData = {};
     for(let field in this.data){
        rawData[field] = this._fetchChild(this.data[field]);
     }
-
-    return rawData;
+    return JSON.parse(JSON.stringify(rawData));
   }
 
   getErrors() {

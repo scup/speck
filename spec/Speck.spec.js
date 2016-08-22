@@ -29,7 +29,7 @@ describe('Speck', function (){
       fakeAttribute: 'should not come'
     });
 
-    expect(fakeEntity.fetch()).toEqual({
+    expect(fakeEntity.toJSON()).toEqual({
       [defaultField]: defaultValue,
       [`_${defaultField}`]: `_${defaultValue}`
     });
@@ -154,7 +154,7 @@ describe('Speck', function (){
       const collection = new ProductEntityCollection(products);
       const results = collection.filter({name: 'A'}).result();
 
-      expect(results[0].fetch()).toEqual({ name: 'A', price: 10 });
+      expect(results[0].toJSON()).toEqual({ name: 'A', price: 10 });
     });
 
     it('should return a collection similar with keyBy/lodash ', function (){
@@ -197,9 +197,9 @@ describe('Speck', function (){
       const collection = new ProductEntityCollection(products);
       const results = collection.getSortedItemsByName().result();
 
-      expect(results[0].fetch()).toEqual({ name: 'A', price: undefined });
-      expect(results[1].fetch()).toEqual({ name: 'B', price: undefined });
-      expect(results[2].fetch()).toEqual({ name: 'C', price: 2 });
+      expect(results[0].toJSON()).toEqual({ name: 'A'});
+      expect(results[1].toJSON()).toEqual({ name: 'B'});
+      expect(results[2].toJSON()).toEqual({ name: 'C', price: 2 });
     });
 
     it('concat a list with another list ', function (){
@@ -226,7 +226,7 @@ describe('Speck', function (){
           children: [{
               name: 'Node1.1',
               children: [{
-                  name: "Node 1.1.1"
+                  name: 'Node 1.1.1'
               }]
           }]
       });
@@ -299,7 +299,7 @@ describe('Speck', function (){
 
     it('should validate if value is equal string', () => {
       const myStringValidator = joiAdapter(Joi.string());
-      expect(myStringValidator(myData, "myStringProp")).toBeUndefined();
+      expect(myStringValidator(myData, 'myStringProp')).toBeUndefined();
     });
 
     it('should validate if string have URL format', () => {
