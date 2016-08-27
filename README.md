@@ -2,6 +2,8 @@
 
 ## Speck - Let you create your domain entities with reactive validation based on [React](https://github.com/facebook/react) [propTypes](https://facebook.github.io/react/docs/reusable-components.html)
 
+[![Build Status](https://travis-ci.org/scup/speck.svg?branch=master)](https://travis-ci.org/scup/speck)
+
 This package let you create entities with schema validation based on React PropTypes.
 
 * [Installing](#installing)
