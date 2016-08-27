@@ -7,7 +7,7 @@
     "test": "find ./spec -name '*.spec.js' | NODE_ENV=test xargs mocha --compilers js:babel-register --reporter spec",
     "test:watch": "npm test -- --watch",
     "coverage": "nyc npm test",
-    "postinstall": "babel src --out-dir lib --presets es2015"
+    "build": "babel src --out-dir lib --presets es2015"
   },
   "nyc": {
     "branches": 95,
