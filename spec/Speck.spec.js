@@ -1,3 +1,4 @@
+import { expect } from 'chai';
 import Faker from 'faker';
 import Joi from 'joi';
 import {Entity, Collection, validatorAdapter } from '../src/Speck';
@@ -21,7 +22,7 @@ import {
 describe('Speck', function (){
   it('should merge with default data', function (){
     const fakeEntity = new FakeEntityWithDefault();
-    expect(fakeEntity[defaultField]).toBe(defaultValue);
+    expect(fakeEntity[defaultField]).to.equal(defaultValue);
   });
 
   it('should clean data on fetch', function (){
@@ -52,8 +53,8 @@ describe('Speck', function (){
       [defaultField]: newValue
     });
 
-    expect(fakeEntity[`_${defaultField}`]).toBe(`_${defaultValue}`);
-    expect(fakeEntity[defaultField]).toBe(newValue);
+    expect(fakeEntity[`_${defaultField}`]).to.equal(`_${defaultValue}`);
+    expect(fakeEntity[defaultField]).to.equal(newValue);
   });
 
   it('should validate when build', function (){
@@ -84,12 +85,12 @@ describe('Speck', function (){
     // when
     const entity = new Validatable({ field: 'invalid', otherField: 'invalid'});
 
-    expect(entity.valid).toBe(false);
+    expect(entity.valid).to.equal(false);
     entity.field = 'valid';
 
-    expect(entity.valid).toBe(false);
+    expect(entity.valid).to.equal(false);
     entity.otherField = 'valid';
-    expect(entity.valid).toBe(true);
+    expect(entity.valid).to.equal(true);
   });
 
   describe('children', function (){
@@ -101,8 +102,8 @@ describe('Speck', function (){
         ]
       });
 
-      expect(father.children[0].constructor).toBe(ChildrenEntity);
-      expect(father.children[1].constructor).toBe(ChildrenEntity);
+      expect(father.children[0].constructor).to.equal(ChildrenEntity);
+      expect(father.children[1].constructor).to.equal(ChildrenEntity);
     });
 
     it('should auto build using the parameter builder', () => {
@@ -113,8 +114,8 @@ describe('Speck', function (){
         }
       });
 
-      expect(father.children.content.constructor).toBe(ChildrenEntity);
-      expect(father.children.tweet.constructor).toBe(ChildrenEntity);
+      expect(father.children.content.constructor).to.equal(ChildrenEntity);
+      expect(father.children.tweet.constructor).to.equal(ChildrenEntity);
     });
 
     it('should include errors of children', function (){
@@ -174,7 +175,7 @@ describe('Speck', function (){
                         .filter({ name: 'B' })
                         .keyBy('name');
 
-      expect(!!product.B).toBe(true);
+      expect(!!product.B).to.equal(true);
       expect(product.B.name).toEqual(products[1].name);
       expect(product.B.price).toEqual(products[1].price);
     });
@@ -231,8 +232,8 @@ describe('Speck', function (){
           }]
       });
 
-      expect(childWithChildArray.constructor).toBe(ChildWithChildArray);
-      expect(childWithChildArray.children[0].constructor).toBe(ChildWithChildArray);
+      expect(childWithChildArray.constructor).to.equal(ChildWithChildArray);
+      expect(childWithChildArray.children[0].constructor).to.equal(ChildWithChildArray);
     });
   });
 
