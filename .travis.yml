@@ -8,8 +8,8 @@ cache:
 after_script:
   - git config credential.helper "store --file=.git/credentials"
   - echo "https://${GH_TOKEN}:@github.com" > .git/credentials
-  - npm run build
   - rm -rf lib
+  - npm run build
   - if [[ $TRAVIS_BRANCH == 'master' ]]; then { git diff --exit-code --check  && echo "Nothing to commit" || git add lib && git commit -m "Auto generated lib files" } fi
 env:
   global:
