@@ -41,22 +41,6 @@ class Speck {
     this._validate();
   }
 
-  applyEntityConstructor(field, data) {
-     if (!data) return;
-
-    const Type = field.type;
-
-    if(field.builder) {
-      return field.builder(data, Type);
-    }
-
-    if (Array.isArray(data)) {
-      return data.map(instance => new Type(instance));
-    }
-
-    return new Type(data);
-  }
-
   _mergeDefault(data) {
     const newData = {};
     let field;
@@ -113,6 +97,22 @@ class Speck {
     if(!this.valid) {
       return this.errors;
     }
+  }
+
+  applyEntityConstructor(field, data) {
+    if (!data) return;
+
+    const Type = field.type;
+
+    if(field.builder) {
+      return field.builder(data, Type);
+    }
+
+    if (Array.isArray(data)) {
+      return data.map(instance => new Type(instance));
+    }
+
+    return new Type(data);
   }
 
   fetch() {
