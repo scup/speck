@@ -4,10 +4,26 @@
   "description": "Domain entities with reactive validation",
   "main": "lib/Speck.js",
   "scripts": {
-    "test": "node spec/jasmine-runner",
-    "coverage": "babel-istanbul cover 'spec/jasmine-runner.js' -x '**/spec/**' && open ./coverage/lcov-report/index.html",
-    "postinstall": "babel src --out-dir lib --presets es2015",
-    "work": "nodemon spec/jasmine-runner"
+    "test": "find ./spec -name '*.spec.js' | NODE_ENV=test xargs mocha --compilers js:babel-register --reporter spec",
+    "test:watch": "npm test -- --watch",
+    "coverage": "nyc npm test",
+    "build": "babel src --out-dir lib --presets es2015"
+  },
+  "nyc": {
+    "branches": 95,
+    "check-coverage": true,
+    "functions": 95,
+    "lines": 95,
+    "statements": 95,
+    "reporter": [
+      "lcov",
+      "text",
+      "text-summary"
+    ],
+    "exclude": [
+      "spec/**/*.spec.js",
+      "node_modules/**/*"
+    ]
   },
   "repository": {
     "type": "git",
@@ -33,13 +49,14 @@
   },
   "devDependencies": {
     "babel-eslint": "^6.1.0",
+    "chai": "^3.5.0",
     "faker": "^3.0.1",
-    "jasmine": "^2.4.1",
-    "jasmine-core": "^2.4.1",
-    "jasmine-spec-reporter": "^2.5.0",
+    "istanbul": "^0.4.5",
     "joi": "^9.0.4",
+    "mocha": "^3.0.2",
     "nodemon": "^1.9.2",
+    "nyc": "^8.1.0",
     "react": "^0.14.3",
-    "sinon": "^1.17.2"
+    "sinon": "^1.17.5"
   }
 }

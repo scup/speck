@@ -1,6 +1,9 @@
+import { expect } from 'chai';
 import Faker from 'faker';
 import Joi from 'joi';
-import {Entity, Collection, validatorAdapter } from '../src/Speck';
+import sinon from 'sinon';
+
+import { Entity, Collection, validatorAdapter } from '../src/Speck';
 
 import {
   defaultField,
@@ -21,7 +24,7 @@ import {
 describe('Speck', function (){
   it('should merge with default data', function (){
     const fakeEntity = new FakeEntityWithDefault();
-    expect(fakeEntity[defaultField]).toBe(defaultValue);
+    expect(fakeEntity[defaultField]).to.equal(defaultValue);
   });
 
   it('should clean data on fetch', function (){
@@ -29,7 +32,7 @@ describe('Speck', function (){
       fakeAttribute: 'should not come'
     });
 
-    expect(fakeEntity.toJSON()).toEqual({
+    expect(fakeEntity.toJSON()).to.deep.equal({
       [defaultField]: defaultValue,
       [`_${defaultField}`]: `_${defaultValue}`
     });
@@ -37,13 +40,13 @@ describe('Speck', function (){
 
   it('should create set for property and call validate when change', function (){
     const fakeEntity = new FakeEntityWithDefault();
-    spyOn(fakeEntity, '_validate');
+    sinon.spy(fakeEntity, '_validate');
 
     fakeEntity[`_${defaultField}`] = `_${defaultValue}`;
-    expect(fakeEntity._validate).not.toHaveBeenCalled();
+    sinon.assert.notCalled(fakeEntity._validate);
 
     fakeEntity[`_${defaultField}`] = defaultValue;
-    expect(fakeEntity._validate).toHaveBeenCalled();
+    sinon.assert.calledOnce(fakeEntity._validate);
   });
 
   it('should not use defaultValue when a value is passed', function (){
@@ -52,14 +55,14 @@ describe('Speck', function (){
       [defaultField]: newValue
     });
 
-    expect(fakeEntity[`_${defaultField}`]).toBe(`_${defaultValue}`);
-    expect(fakeEntity[defaultField]).toBe(newValue);
+    expect(fakeEntity[`_${defaultField}`]).to.equal(`_${defaultValue}`);
+    expect(fakeEntity[defaultField]).to.equal(newValue);
   });
 
   it('should validate when build', function (){
     // given
-    spyOn(Validatable.SCHEMA, 'field').and.returnValue(null)
-    spyOn(Validatable.SCHEMA.otherField, 'validator').and.returnValue(null)
+    sinon.spy(Validatable.SCHEMA, 'field');
+    sinon.spy(Validatable.SCHEMA.otherField, 'validator');
 
     // when
     new Validatable({
@@ -68,12 +71,14 @@ describe('Speck', function (){
     });
 
     // then
-    expect(Validatable.SCHEMA.field).toHaveBeenCalledWith(
+    sinon.assert.calledWith(
+      Validatable.SCHEMA.field,
       { field: 'value', otherField: 'bla' },
       'field',
       'ValidatableEntity'
     );
-    expect(Validatable.SCHEMA.otherField.validator).toHaveBeenCalledWith(
+    sinon.assert.calledWith(
+      Validatable.SCHEMA.otherField.validator,
       { field: 'value', otherField: 'bla' },
       'otherField',
       'ValidatableEntity'
@@ -84,12 +89,12 @@ describe('Speck', function (){
     // when
     const entity = new Validatable({ field: 'invalid', otherField: 'invalid'});
 
-    expect(entity.valid).toBe(false);
+    expect(entity.valid).to.equal(false);
     entity.field = 'valid';
 
-    expect(entity.valid).toBe(false);
+    expect(entity.valid).to.equal(false);
     entity.otherField = 'valid';
-    expect(entity.valid).toBe(true);
+    expect(entity.valid).to.equal(true);
   });
 
   describe('children', function (){
@@ -101,8 +106,8 @@ describe('Speck', function (){
         ]
       });
 
-      expect(father.children[0].constructor).toBe(ChildrenEntity);
-      expect(father.children[1].constructor).toBe(ChildrenEntity);
+      expect(father.children[0].constructor).to.equal(ChildrenEntity);
+      expect(father.children[1].constructor).to.equal(ChildrenEntity);
     });
 
     it('should auto build using the parameter builder', () => {
@@ -113,8 +118,8 @@ describe('Speck', function (){
         }
       });
 
-      expect(father.children.content.constructor).toBe(ChildrenEntity);
-      expect(father.children.tweet.constructor).toBe(ChildrenEntity);
+      expect(father.children.content.constructor).to.equal(ChildrenEntity);
+      expect(father.children.tweet.constructor).to.equal(ChildrenEntity);
     });
 
     it('should include errors of children', function (){
@@ -123,12 +128,12 @@ describe('Speck', function (){
         children: [{ foo: 'bar' }]
       });
 
-      expect(father.getErrors()).toEqual({ foo: { errors: [ 'foo accepts just \'bar\' as value' ] } });
+      expect(father.getErrors()).to.deep.equal({ foo: { errors: [ 'foo accepts just \'bar\' as value' ] } });
 
       const lee = new ChildrenEntity({ foo: 'bar invalid '});
       father.children.push(lee);
 
-      expect(father.getErrors()).toEqual({
+      expect(father.getErrors()).to.deep.equal({
         foo: { errors: [ 'foo accepts just \'bar\' as value' ] },
         children: { 1: { foo: { errors: [ 'foo accepts just \'bar\' as value' ] } } }
       });
@@ -154,7 +159,7 @@ describe('Speck', function (){
       const collection = new ProductEntityCollection(products);
       const results = collection.filter({name: 'A'}).result();
 
-      expect(results[0].toJSON()).toEqual({ name: 'A', price: 10 });
+      expect(results[0].toJSON()).to.deep.equal({ name: 'A', price: 10 });
     });
 
     it('should return a collection similar with keyBy/lodash ', function (){
@@ -174,9 +179,9 @@ describe('Speck', function (){
                         .filter({ name: 'B' })
                         .keyBy('name');
 
-      expect(!!product.B).toBe(true);
-      expect(product.B.name).toEqual(products[1].name);
-      expect(product.B.price).toEqual(products[1].price);
+      expect(!!product.B).to.equal(true);
+      expect(product.B.name).to.deep.equal(products[1].name);
+      expect(product.B.price).to.deep.equal(products[1].price);
     });
 
     it('should return a collection ordered by name ', function (){
@@ -197,9 +202,9 @@ describe('Speck', function (){
       const collection = new ProductEntityCollection(products);
       const results = collection.getSortedItemsByName().result();
 
-      expect(results[0].toJSON()).toEqual({ name: 'A'});
-      expect(results[1].toJSON()).toEqual({ name: 'B'});
-      expect(results[2].toJSON()).toEqual({ name: 'C', price: 2 });
+      expect(results[0].toJSON()).to.deep.equal({ name: 'A'});
+      expect(results[1].toJSON()).to.deep.equal({ name: 'B'});
+      expect(results[2].toJSON()).to.deep.equal({ name: 'C', price: 2 });
     });
 
     it('concat a list with another list ', function (){
@@ -231,8 +236,8 @@ describe('Speck', function (){
           }]
       });
 
-      expect(childWithChildArray.constructor).toBe(ChildWithChildArray);
-      expect(childWithChildArray.children[0].constructor).toBe(ChildWithChildArray);
+      expect(childWithChildArray.constructor).to.equal(ChildWithChildArray);
+      expect(childWithChildArray.children[0].constructor).to.equal(ChildWithChildArray);
     });
   });
 
@@ -245,11 +250,11 @@ describe('Speck', function (){
 
       const contextValidated = fakeEntityWithContext.validateContext('create');
 
-      expect(fakeEntityWithContext.constructor).toBe(FakeEntityWithExcludeContext);
-      expect(contextValidated.id).toBeUndefined();
-      expect(contextValidated.requiredProp1).not.toBeUndefined();
-      expect(contextValidated.requiredProp2).not.toBeUndefined();
-      expect(contextValidated.requiredProp3).toBeUndefined();
+      expect(fakeEntityWithContext.constructor).to.equal(FakeEntityWithExcludeContext);
+      expect(contextValidated.id).to.be.undefined;
+      expect(contextValidated.requiredProp1).not.to.be.undefined;
+      expect(contextValidated.requiredProp2).not.to.be.undefined;
+      expect(contextValidated.requiredProp3).to.be.undefined;
     });
 
     it('it should set contexts include', () => {
@@ -259,11 +264,11 @@ describe('Speck', function (){
 
       const contextValidated = fakeEntityWithContext.validateContext('create');
 
-      expect(fakeEntityWithContext.constructor).toBe(FakeEntityWithIncludeContext);
-      expect(contextValidated.id).toBeUndefined();
-      expect(contextValidated.requiredProp1).not.toBeUndefined();
-      expect(contextValidated.requiredProp2).not.toBeUndefined();
-      expect(contextValidated.requiredProp3).toBeUndefined();
+      expect(fakeEntityWithContext.constructor).to.equal(FakeEntityWithIncludeContext);
+      expect(contextValidated.id).to.be.undefined;
+      expect(contextValidated.requiredProp1).not.to.be.undefined;
+      expect(contextValidated.requiredProp2).not.to.be.undefined;
+      expect(contextValidated.requiredProp3).to.be.undefined;
     });
 
     it('it should set custom validations', () => {
@@ -274,11 +279,11 @@ describe('Speck', function (){
 
       const contextValidated = fakeEntityWithContext.validateContext('create');
 
-      expect(fakeEntityWithContext.constructor).toBe(FakeEntityWithCustomValidationWithContext);
-      expect(contextValidated.id).toBeUndefined();
+      expect(fakeEntityWithContext.constructor).to.equal(FakeEntityWithCustomValidationWithContext);
+      expect(contextValidated.id).to.be.undefined;
 
-      expect(contextValidated.requiredProp1).not.toBeUndefined();
-      expect(fakeEntityWithContext.errors.requiredProp1).toBeUndefined();
+      expect(contextValidated.requiredProp1).not.to.be.undefined;
+      expect(fakeEntityWithContext.errors.requiredProp1).to.be.undefined;
 
     });
   });
@@ -299,7 +304,7 @@ describe('Speck', function (){
 
     it('should validate if value is equal string', () => {
       const myStringValidator = joiAdapter(Joi.string());
-      expect(myStringValidator(myData, 'myStringProp')).toBeUndefined();
+      expect(myStringValidator(myData, 'myStringProp')).to.be.undefined;
     });
 
     it('should validate if string have URL format', () => {
@@ -307,12 +312,12 @@ describe('Speck', function (){
         'http',
         'https'
       ]}) );
-      expect(myURLValidator(myData, 'httpURLProp')).toBeUndefined();
-      expect(myURLValidator(myData, 'httpsURLProp')).toBeUndefined();
+      expect(myURLValidator(myData, 'httpURLProp')).to.be.undefined;
+      expect(myURLValidator(myData, 'httpsURLProp')).to.be.undefined;
       const expectedMsg = 'JoiValidationError: child "ftpURLProp" fails '+
                           'because ["ftpURLProp" must be a valid uri with a '+
                           'scheme matching the http|https pattern]';
-      expect(myURLValidator(myData, 'ftpURLProp').message).toBe(expectedMsg);
+      expect(myURLValidator(myData, 'ftpURLProp').message).to.equal(expectedMsg);
     })
   });
 });

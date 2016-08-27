@@ -41,22 +41,6 @@ class Speck {
     this._validate();
   }
 
-  applyEntityConstructor(field, data) {
-     if (!data) return;
-
-    const Type = field.type;
-
-    if(field.builder) {
-      return field.builder(data, Type);
-    }
-
-    if (Array.isArray(data)) {
-      return data.map(instance => new Type(instance));
-    }
-
-    return new Type(data);
-  }
-
   _mergeDefault(data) {
     const newData = {};
     let field;
@@ -115,6 +99,22 @@ class Speck {
     }
   }
 
+  applyEntityConstructor(field, data) {
+    if (!data) return;
+
+    const Type = field.type;
+
+    if(field.builder) {
+      return field.builder(data, Type);
+    }
+
+    if (Array.isArray(data)) {
+      return data.map(instance => new Type(instance));
+    }
+
+    return new Type(data);
+  }
+
   fetch() {
     console.log('fetch() will be deprecated, use toJSON().')
     return this.toJSON();
@@ -163,7 +163,7 @@ class Speck {
       };
     }
 
-    const contextErrors = {...this.errors};
+    const contextErrors = Object.assign({}, this.errors);
     if(this.contexts[context].fields){
       Object.keys(this.contexts[context].fields).forEach((field) => {
         const result = this.contexts[context].fields[field](this, field, this.constructor.name);
@@ -174,10 +174,10 @@ class Speck {
 
     const errors = Object.keys(contextErrors).filter(validation);
 
-    return errors.reduce((acc,e)=>{
-      acc[e] = contextErrors[e];
-      return acc;
-    },{});
+    return errors.reduce((newError,errorField)=>{
+      newError[errorField] = contextErrors[errorField];
+      return newError;
+    } , {});
   }
 }
 
