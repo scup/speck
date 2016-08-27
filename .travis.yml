@@ -11,7 +11,7 @@ after_script:
   - rm -rf lib
   - npm run build
   - echo $TRAVIS_BRANCH
-  - if [[ $TRAVIS_BRANCH == 'master' ]]; then echo "Here I am" fi
+  - if [[ $TRAVIS_BRANCH == 'master' ]]; then { echo "Here I am" } fi
   - if [[ $TRAVIS_BRANCH == 'master' ]]; then { git diff --exit-code --check lib/  && echo "Nothing to commit" || git add lib && git commit -m "Auto generated lib files" } fi
 env:
   global:
