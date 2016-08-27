@@ -174,10 +174,10 @@ class Speck {
 
     const errors = Object.keys(contextErrors).filter(validation);
 
-    return errors.reduce((acc,e)=>{
-      acc[e] = contextErrors[e];
-      return acc;
-    },{});
+    return errors.reduce((newError,errorField)=>{
+      newError[errorField] = contextErrors[errorField];
+      return newError;
+    } , {});
   }
 }
 
