@@ -121,10 +121,12 @@ class Speck {
   }
 
   toJSON(){
-    let rawData = {};
-    for(let field in this.data){
-       rawData[field] = this._fetchChild(this.data[field]);
-    }
+    let rawData = Object
+      .keys(this.data)
+      .reduce((data, field) => {
+        return Object.assign(data, { [field]: this._fetchChild(this.data[field]) })
+      }, {});
+
     return JSON.parse(JSON.stringify(rawData));
   }
 
