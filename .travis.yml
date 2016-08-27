@@ -7,7 +7,7 @@ cache:
   - node_modules/
 after_script:
   - git config credential.helper "store --file=.git/credentials"
-  - echo "https://d6f1dcd378e8f60bdc3d:@github.com" > .git/credentials
+  - echo "https://${GH_TOKEN}:@github.com" > .git/credentials
   - npm run build
   - rm -rf lib
   - git diff --exit-code --check  && echo "Nothing to commit" || git add lib && git commit -m "Auto generated lib files"
