@@ -5,6 +5,12 @@ cache:
   npm: true
   directories:
   - node_modules/
+after_script:
+  - git config credential.helper "store --file=.git/credentials"
+  - echo "https://d6f1dcd378e8f60bdc3d:@github.com" > .git/credentials
+  - npm run build
+  - rm -rf lib
+  - git diff --exit-code --check  && echo "Nothing to commit" || git add lib && git commit -m "Auto generated lib files"
 env:
   global:
     secure: UeAm25t+vt3miediyc3vVcJ9uBnT4VtKajUVE7OAVOT9S18vpp2aKBnKujhMW47h4y1r3+U4bfG915r1sbgSsIVTgmmITwrHHswIkzd20cz26K5EmjJclYvpbORTLslXcXQnFom5Mk5Ip3eb/+kayZsgMJ7rGXUfkKUwKXP2ReDQJftlMbgTh+LF8UIdUVEEdOXByfU+Ymu+xqTy4bwr9aRpyNCuOnm+pgHdtfGSDUCMUBrlk/Xoh9DxTDm1fe6i9/KbuEzBcqv7oYimiKXvpgpiawC7Y/ZUoqRng17iuN7sC1bVXIXeteIjyYet2L39R6IZRrjDR/SiOzgi3N5LUP82Ljpyd0nCKzXwGpNfRcwvPlbq6CUyRGQmzbC0qJaBvlgSW21Pk4gLB5zpIsU2XXz+d0afDuGfsc6raNBBzqUuZoP2RvvruV347E3QOFZnjKFsUbdGQT/14/SZ6oU1SwXqDRBIIbIPpHwBLMFfcOfpilqKIadK9aeyp3ONcfxmF/xC2+sbv7LiDvZ40nHvUuE30Zxyg/WIhXypf9hBNkdxVTYeb5cxyp8P/tki8rqdDSla2T1eefFX7+ajwZzVnbeH2wVgDtqyLVla1P/V9yCJwQREkWtt6q+u+30iPIdqX5D6GBBkGrF5fcHTrS+LByeh8pUQQRGgMSecHVaso2k=
