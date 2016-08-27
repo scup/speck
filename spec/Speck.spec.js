@@ -3,7 +3,7 @@ import Faker from 'faker';
 import Joi from 'joi';
 import sinon from 'sinon';
 
-import {Entity, Collection, validatorAdapter } from '../src/Speck';
+import { Entity, Collection, validatorAdapter } from '../src/Speck';
 
 import {
   defaultField,

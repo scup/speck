@@ -163,7 +163,7 @@ class Speck {
       };
     }
 
-    const contextErrors = {...this.errors};
+    const contextErrors = Object.assign({}, this.errors);
     if(this.contexts[context].fields){
       Object.keys(this.contexts[context].fields).forEach((field) => {
         const result = this.contexts[context].fields[field](this, field, this.constructor.name);
