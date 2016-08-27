@@ -1,3 +1,7 @@
 language: node_js
 node_js:
   - "6.1"
+cache:
+  - npm
+  directories:
+    - node_modules/
