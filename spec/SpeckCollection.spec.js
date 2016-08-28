@@ -2,8 +2,7 @@ import { ProductEntityCollection, ChildWithChildArray } from './fixtures/fakerCo
 import { expect } from 'chai';
 
 describe('SpeckCollection', function (){
-
-  it('should return a collection of object', function (){
+  it('returns a collection of object', function (){
 
     const products = [
       {
@@ -22,7 +21,7 @@ describe('SpeckCollection', function (){
     expect(results[0].toJSON()).to.deep.equal({ name: 'A', price: 10 });
   });
 
-  it('should return a collection similar with keyBy/lodash ', function (){
+  it('returns a collection similar with keyBy/lodash ', function (){
     const products = [
       {
         name: 'A',
@@ -44,7 +43,7 @@ describe('SpeckCollection', function (){
     expect(product.B.price).to.deep.equal(products[1].price);
   });
 
-  it('should return a collection ordered by name ', function (){
+  it('returns a collection ordered by name ', function (){
 
     const products = [
       {
@@ -67,7 +66,7 @@ describe('SpeckCollection', function (){
     expect(results[2].toJSON()).to.deep.equal({ name: 'C', price: 2 });
   });
 
-  it('concat a list with another list ', function (){
+  it('concatenates a list with another list ', function (){
 
     const listA = [
       {
@@ -85,7 +84,7 @@ describe('SpeckCollection', function (){
     const results = collection.concat(listB).result();
   });
 
-  it('it should build itself along with childs which is of type itself', () => {
+  it('builds itself along with childs which is of type itself', () => {
     const childWithChildArray = new ChildWithChildArray({
         name: 'Node1',
         children: [{

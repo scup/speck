@@ -16,12 +16,12 @@ describe('Joi', function (){
     };
   });
 
-  it('should validate if value is equal string', () => {
+  it('validates if value is equal string', () => {
     const myStringValidator = joiAdapter(Joi.string());
     expect(myStringValidator(myData, 'myStringProp')).to.be.undefined;
   });
 
-  it('should validate if string have URL format', () => {
+  it('validates if string have URL format', () => {
     const myURLValidator = joiAdapter( Joi.string().uri({ scheme: [
       'http',
       'https'

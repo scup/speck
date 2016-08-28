@@ -19,12 +19,12 @@ import {
 } from './fixtures/fakerClasses';
 
 describe('Speck', function (){
-  it('should merge with default data', function (){
+  it('merges with default data', function (){
     const fakeEntity = new FakeEntityWithDefault();
     expect(fakeEntity[defaultField]).to.equal(defaultValue);
   });
 
-  it('should clean data on fetch', function (){
+  it('cleans data on fetch', function (){
     const fakeEntity = new FakeEntityWithDefault({
       fakeAttribute: 'should not come'
     });
@@ -35,7 +35,7 @@ describe('Speck', function (){
     });
   });
 
-  it('should create set for property and call validate when change', function (){
+  it('creates set for property and call validate when change', function (){
     const fakeEntity = new FakeEntityWithDefault();
     sinon.spy(fakeEntity, '_validate');
 
@@ -46,7 +46,7 @@ describe('Speck', function (){
     sinon.assert.calledOnce(fakeEntity._validate);
   });
 
-  it('should not use defaultValue when a value is passed', function (){
+  it('does not use defaultValue when a value is passed', function (){
     const newValue = Faker.name.findName();
     const fakeEntity = new FakeEntityWithDefault({
       [defaultField]: newValue
@@ -56,7 +56,7 @@ describe('Speck', function (){
     expect(fakeEntity[defaultField]).to.equal(newValue);
   });
 
-  it('should validate when build', function (){
+  it('validates when build', function (){
     // given
     sinon.spy(Validatable.SCHEMA, 'field');
     sinon.spy(Validatable.SCHEMA.otherField, 'validator');
@@ -82,7 +82,7 @@ describe('Speck', function (){
     );
   });
 
-  it('should auto validate', function (){
+  it('validates automatically', function (){
     // when
     const entity = new Validatable({ field: 'invalid', otherField: 'invalid'});
 
@@ -95,7 +95,7 @@ describe('Speck', function (){
   });
 
   describe('children', function (){
-    it('should auto build child entities of array', function (){
+    it('builds automatically child entities of array', function (){
       const father = new FatherEntity({
         children: [
           {},
@@ -107,7 +107,7 @@ describe('Speck', function (){
       expect(father.children[1].constructor).to.equal(ChildrenEntity);
     });
 
-    it('should auto build using the parameter builder', () => {
+    it('builds automatically using the parameter builder', () => {
       const father = new FatherWithObjectEntity({
         children: {
           content: { field: 'foo' },
@@ -119,7 +119,7 @@ describe('Speck', function (){
       expect(father.children.tweet.constructor).to.equal(ChildrenEntity);
     });
 
-    it('should include errors of children', function (){
+    it('includes errors of children', function (){
       const father = new FatherEntity({
         foo: 'test',
         children: [{ foo: 'bar' }]
@@ -139,7 +139,7 @@ describe('Speck', function (){
 
   describe('Contextual validation', function (){
 
-    it('it should set contexts excluded', () => {
+    it('sets contexts excluded', () => {
       const fakeEntityWithContext = new FakeEntityWithExcludeContext({
         name: 'Node1'
       });
@@ -153,7 +153,7 @@ describe('Speck', function (){
       expect(contextValidated.requiredProp3).to.be.undefined;
     });
 
-    it('it should set contexts include', () => {
+    it('sets contexts include', () => {
       const fakeEntityWithContext = new FakeEntityWithIncludeContext({
         name: 'Node1'
       });
@@ -167,7 +167,7 @@ describe('Speck', function (){
       expect(contextValidated.requiredProp3).to.be.undefined;
     });
 
-    it('it should set custom validations', () => {
+    it('sets custom validations', () => {
       const fakeEntityWithContext = new FakeEntityWithCustomValidationWithContext({
         id: 1,
         requiredProp1: -1
