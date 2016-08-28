@@ -100,6 +100,12 @@ class Speck {
     return errors;
   }
 
+  _getChildrenErrors(errors, field) {
+    const children = Array.isArray(this[field]) ? this[field] : [this[field]];
+
+    return children.reduce(this._includeChildErrors.bind(this, field), errors);
+  }
+
   applyEntityConstructor(field, data) {
     if (!data) return;
 
@@ -132,16 +138,9 @@ class Speck {
   }
 
   getErrors() {
-    this._validate();
-    const errors = Object.assign({}, this.errors);
+    const errors = Object.assign({}, this._validate());
 
-    for(let field of this.childrenEntities) {
-      const children = Array.isArray(this[field]) ? this[field] : [this[field]];
-
-      children.reduce(this._includeChildErrors.bind(this, field), errors);
-    }
-
-    return errors;
+    return this.childrenEntities.reduce(this._getChildrenErrors.bind(this), errors);
   }
 
   validateContext(context){
