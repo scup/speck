@@ -137,7 +137,7 @@ describe('Speck', () => {
     it('includes errors of children', () => {
       const father = new FatherEntity({
         foo: 'test',
-        children: [{ foo: '2bar' }],
+        children: [{ foo: '2bar' }, { foo: 'bar' }, { foo: '2bar' }],
         child: { foo: '2bar' }
       });
 
@@ -147,7 +147,8 @@ describe('Speck', () => {
           '0': { foo: { 'errors': [ 'foo accepts just \'bar\' as value' ] } }
         },
         children: {
-          '0': { foo: { 'errors': [ 'foo accepts just \'bar\' as value' ] } }
+          '0': { foo: { 'errors': [ 'foo accepts just \'bar\' as value' ] } },
+          '2': { foo: { 'errors': [ 'foo accepts just \'bar\' as value' ] } }
         }
       });
     });

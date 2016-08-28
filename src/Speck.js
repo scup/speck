@@ -95,7 +95,7 @@ class Speck {
     if(!entity.valid) {
       if(errors[field] === undefined) { errors[field] = {} }
 
-      errors[field][index.toString()] = entity.getErrors();
+      errors[field][index] = entity.getErrors();
     }
     return errors;
   }
