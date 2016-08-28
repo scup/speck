@@ -21,7 +21,7 @@
       "text-summary"
     ],
     "exclude": [
-      "spec/**/*.spec.js",
+      "spec/**/*",
       "node_modules/**/*"
     ]
   },
