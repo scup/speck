@@ -1,3 +1,5 @@
+import { get } from 'lodash';
+
 const createGetterAndSetter = function (instance, field){
   return {
     set: function (value){
@@ -144,7 +146,7 @@ class Speck {
   }
 
   validateContext(context){
-    if(!this.contexts[context]) return this.errors;
+    if(!get(this.contexts, context)) return this.errors;
 
     let validation = () => true;
     if(this.contexts[context].exclude && Object.keys(this.contexts[context].exclude).length > 0){

@@ -198,5 +198,12 @@ describe('Speck', () => {
       expect(fakeEntityWithContext.errors.requiredProp1).to.be.undefined;
 
     });
+
+    it('returns the errors when then context does not exist', () => {
+      const entity = new ProductEntity({ foo: 'bar' });
+      const errors = entity.validateContext('noValidContext');
+
+      expect(errors).to.deep.equal(entity.getErrors());
+    });
   });
 });
