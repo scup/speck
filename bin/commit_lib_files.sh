@@ -6,5 +6,6 @@ then
   then
     echo "Generating lib files"
     git add lib && git commit -m "Auto generated lib files"
+    git push origin master
   fi
 fi
