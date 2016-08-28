@@ -73,11 +73,7 @@ class Speck {
     const error = validator(this.data, field, this.constructor.name + 'Entity');
 
     if (error) {
-      if (!this.errors[field]) {
-        this.errors[field] = { errors : [] }
-      }
-
-      this.errors[field].errors.push(error.message || error);
+      this.errors[field] = { errors : [error.message || error] }
     }
   }
 
