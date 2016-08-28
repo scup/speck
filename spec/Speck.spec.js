@@ -29,9 +29,24 @@ describe('Speck', function (){
       fakeAttribute: 'should not come'
     });
 
-    expect(fakeEntity.toJSON()).to.deep.equal({
+    expect(fakeEntity.fetch()).to.deep.equal({
       [defaultField]: defaultValue,
       [`_${defaultField}`]: `_${defaultValue}`
+    });
+  });
+
+  it('cleans data on toJSON', function (){
+    const fakeEntity = new FakeEntityWithDefault({
+      fakeAttribute: 'should not come',
+      children: [{ foo: 'bar' }],
+      child: { foo: 'bar' }
+    });
+
+    expect(fakeEntity.toJSON()).to.deep.equal({
+      [defaultField]: defaultValue,
+      [`_${defaultField}`]: `_${defaultValue}`,
+      child: { foo: 'bar' },
+      children: [{ foo: 'bar' }]
     });
   });
 

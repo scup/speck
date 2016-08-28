@@ -14,17 +14,6 @@ const fooValidator = function (data, propName){
 
 class FakeEntityWithDefault extends Speck { }
 
-FakeEntityWithDefault.SCHEMA = {
-  [defaultField]: {
-    validator: function (){},
-    defaultValue: defaultValue
-  },
-  [`_${defaultField}`]: {
-    validator: function (){},
-    defaultValue: `_${defaultValue}`
-  },
-};
-
 function alwaysTruth(){
   return true;
 }
@@ -55,6 +44,25 @@ Validatable.SCHEMA = {
 class ChildrenEntity extends Speck { }
 ChildrenEntity.SCHEMA = {
   foo: fooValidator
+};
+
+FakeEntityWithDefault.SCHEMA = {
+  [defaultField]: {
+    validator: function (){},
+    defaultValue: defaultValue
+  },
+  [`_${defaultField}`]: {
+    validator: function (){},
+    defaultValue: `_${defaultValue}`
+  },
+  child: {
+    validator: PropTypes.instanceOf(ChildrenEntity),
+    type: ChildrenEntity
+  },
+  children: {
+    validator: PropTypes.arrayOf(PropTypes.instanceOf(ChildrenEntity)),
+    type: ChildrenEntity
+  }
 };
 
 class FatherEntity extends Speck { }

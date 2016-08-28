@@ -57,9 +57,9 @@ class Speck {
     if (Array.isArray(fieldValue)){
       return fieldValue.map(this._fetchChild)
     }
-    if (fieldValue)
-    if (fieldValue.fetch){
-      return fieldValue.fetch();
+
+    if (fieldValue && typeof(fieldValue.toJSON) === 'function'){
+      return fieldValue.toJSON();
     }
 
     return fieldValue
