@@ -137,17 +137,18 @@ describe('Speck', () => {
     it('includes errors of children', () => {
       const father = new FatherEntity({
         foo: 'test',
-        children: [{ foo: 'bar' }]
+        children: [{ foo: '2bar' }],
+        child: { foo: '2bar' }
       });
-
-      expect(father.getErrors()).to.deep.equal({ foo: { errors: [ 'foo accepts just \'bar\' as value' ] } });
-
-      const lee = new ChildrenEntity({ foo: 'bar invalid '});
-      father.children.push(lee);
 
       expect(father.getErrors()).to.deep.equal({
         foo: { errors: [ 'foo accepts just \'bar\' as value' ] },
-        children: { 1: { foo: { errors: [ 'foo accepts just \'bar\' as value' ] } } }
+        child: {
+          '0': { foo: { 'errors': [ 'foo accepts just \'bar\' as value' ] } }
+        },
+        children: {
+          '0': { foo: { 'errors': [ 'foo accepts just \'bar\' as value' ] } }
+        }
       });
     });
   });

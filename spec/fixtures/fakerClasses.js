@@ -1,5 +1,6 @@
 import Faker from 'faker';
 import { PropTypes } from 'react';
+import { noop } from 'lodash';
 
 import Speck from '../../src/Speck';
 
@@ -48,11 +49,11 @@ ChildrenEntity.SCHEMA = {
 
 FakeEntityWithDefault.SCHEMA = {
   [defaultField]: {
-    validator: function (){},
+    validator: noop,
     defaultValue: defaultValue
   },
   [`_${defaultField}`]: {
-    validator: function (){},
+    validator: noop,
     defaultValue: `_${defaultValue}`
   },
   child: {
@@ -71,7 +72,11 @@ FatherEntity.SCHEMA = {
     validator: fooValidator,
     defaultValue: 'bar'
   }, children: {
-    validator: function (){},
+    validator: noop,
+    type: ChildrenEntity
+  },
+  child: {
+    validator: noop,
     type: ChildrenEntity
   }
 };

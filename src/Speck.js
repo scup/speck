@@ -91,6 +91,15 @@ class Speck {
     }
   }
 
+  _includeChildErrors(field, errors, entity, index) {
+    if(!entity.valid) {
+      if(errors[field] === undefined) { errors[field] = {} }
+
+      errors[field][index.toString()] = entity.getErrors();
+    }
+    return errors;
+  }
+
   applyEntityConstructor(field, data) {
     if (!data) return;
 
@@ -129,13 +138,7 @@ class Speck {
     for(let field of this.childrenEntities) {
       const children = Array.isArray(this[field]) ? this[field] : [this[field]];
 
-      children.forEach((entity, index) => {
-        if(!entity.valid) {
-          if(errors[field] === undefined) { errors[field] = {} }
-
-          errors[field][index] = entity.getErrors();
-        }
-      })
+      children.reduce(this._includeChildErrors.bind(this, field), errors);
     }
 
     return errors;
