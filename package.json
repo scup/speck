@@ -2,7 +2,7 @@
   "name": "speck-entity",
   "version": "0.1.2",
   "description": "Domain entities with reactive validation",
-  "main": "lib/Speck.js",
+  "main": "lib/index.js",
   "scripts": {
     "test": "find ./spec -name '*.spec.js' | NODE_ENV=test xargs mocha --compilers js:babel-register --reporter spec",
     "test:watch": "npm test -- --watch",

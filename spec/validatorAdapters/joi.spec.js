@@ -1,0 +1,36 @@
+import { expect } from 'chai';
+import Joi from 'joi';
+
+import { Adapter } from '../../src/validatorAdapters/joi';
+
+describe('Joi', function (){
+  let myData, joiAdapter;
+
+  beforeEach(() => {
+    joiAdapter = Adapter(Joi);
+    myData = {
+      myStringProp: 'Some text',
+      httpURLProp: 'http://mysite.com',
+      httpsURLProp: 'https://mysite.com',
+      ftpURLProp: 'ftp://myftp.com',
+    };
+  });
+
+  it('should validate if value is equal string', () => {
+    const myStringValidator = joiAdapter(Joi.string());
+    expect(myStringValidator(myData, 'myStringProp')).to.be.undefined;
+  });
+
+  it('should validate if string have URL format', () => {
+    const myURLValidator = joiAdapter( Joi.string().uri({ scheme: [
+      'http',
+      'https'
+    ]}) );
+    expect(myURLValidator(myData, 'httpURLProp')).to.be.undefined;
+    expect(myURLValidator(myData, 'httpsURLProp')).to.be.undefined;
+    const expectedMsg = 'JoiValidationError: child "ftpURLProp" fails '+
+                        'because ["ftpURLProp" must be a valid uri with a '+
+                        'scheme matching the http|https pattern]';
+    expect(myURLValidator(myData, 'ftpURLProp').message).to.equal(expectedMsg);
+  })
+});

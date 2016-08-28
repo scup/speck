@@ -1,21 +1,18 @@
 import { expect } from 'chai';
 import Faker from 'faker';
-import Joi from 'joi';
 import sinon from 'sinon';
 
-import { Entity, Collection, validatorAdapter } from '../src/Speck';
+import Speck from '../src/Speck';
 
 import {
   defaultField,
   defaultValue,
   FakeEntityWithDefault,
   ProductEntity,
-  ProductEntityCollection,
   Validatable,
   ChildrenEntity,
   FatherEntity,
   FatherWithObjectEntity,
-  ChildWithChildArray,
   FakeEntityWithExcludeContext,
   FakeEntityWithIncludeContext,
   FakeEntityWithCustomValidationWithContext
@@ -140,107 +137,6 @@ describe('Speck', function (){
     });
   });
 
-
-  describe('collection', function (){
-
-    it('should return a collection of object', function (){
-
-      const products = [
-        {
-          name: 'A',
-          price: 10
-        },
-        {
-          name: 'B',
-          price: 2
-        },
-      ];
-
-      const collection = new ProductEntityCollection(products);
-      const results = collection.filter({name: 'A'}).result();
-
-      expect(results[0].toJSON()).to.deep.equal({ name: 'A', price: 10 });
-    });
-
-    it('should return a collection similar with keyBy/lodash ', function (){
-      const products = [
-        {
-          name: 'A',
-          price: 1
-        },
-        {
-          name: 'B',
-          price: 2
-        },
-      ];
-
-      const collection = new ProductEntityCollection(products);
-      const product = collection
-                        .filter({ name: 'B' })
-                        .keyBy('name');
-
-      expect(!!product.B).to.equal(true);
-      expect(product.B.name).to.deep.equal(products[1].name);
-      expect(product.B.price).to.deep.equal(products[1].price);
-    });
-
-    it('should return a collection ordered by name ', function (){
-
-      const products = [
-        {
-          name: 'B'
-        },
-        {
-          name: 'C',
-          price: 2
-        },
-        {
-          name: 'A'
-        }
-      ];
-
-      const collection = new ProductEntityCollection(products);
-      const results = collection.getSortedItemsByName().result();
-
-      expect(results[0].toJSON()).to.deep.equal({ name: 'A'});
-      expect(results[1].toJSON()).to.deep.equal({ name: 'B'});
-      expect(results[2].toJSON()).to.deep.equal({ name: 'C', price: 2 });
-    });
-
-    it('concat a list with another list ', function (){
-
-      const listA = [
-        {
-          name: 'AAA'
-        }
-      ];
-
-      const listB = [
-        {
-          name: 'BBB'
-        }
-      ];
-
-      const collection = new ProductEntityCollection(listA);
-      const results = collection.concat(listB).result();
-    });
-
-    it('it should build itself along with childs which is of type itself', () => {
-      const childWithChildArray = new ChildWithChildArray({
-          name: 'Node1',
-          children: [{
-              name: 'Node1.1',
-              children: [{
-                  name: 'Node 1.1.1'
-              }]
-          }]
-      });
-
-      expect(childWithChildArray.constructor).to.equal(ChildWithChildArray);
-      expect(childWithChildArray.children[0].constructor).to.equal(ChildWithChildArray);
-    });
-  });
-
   describe('Contextual validation', function (){
 
     it('it should set contexts excluded', () => {
@@ -286,38 +182,5 @@ describe('Speck', function (){
       expect(fakeEntityWithContext.errors.requiredProp1).to.be.undefined;
 
     });
-  });
-
-  describe('Joi Validator', function (){
-    let myData,
-        joiAdapter;
-
-    beforeEach(() => {
-      joiAdapter = validatorAdapter('joi', Joi);
-      myData = {
-        myStringProp: 'Some text',
-        httpURLProp: 'http://mysite.com',
-        httpsURLProp: 'https://mysite.com',
-        ftpURLProp: 'ftp://myftp.com',
-      };
-    });
-
-    it('should validate if value is equal string', () => {
-      const myStringValidator = joiAdapter(Joi.string());
-      expect(myStringValidator(myData, 'myStringProp')).to.be.undefined;
-    });
-
-    it('should validate if string have URL format', () => {
-      const myURLValidator = joiAdapter( Joi.string().uri({ scheme: [
-        'http',
-        'https'
-      ]}) );
-      expect(myURLValidator(myData, 'httpURLProp')).to.be.undefined;
-      expect(myURLValidator(myData, 'httpsURLProp')).to.be.undefined;
-      const expectedMsg = 'JoiValidationError: child "ftpURLProp" fails '+
-                          'because ["ftpURLProp" must be a valid uri with a '+
-                          'scheme matching the http|https pattern]';
-      expect(myURLValidator(myData, 'ftpURLProp').message).to.equal(expectedMsg);
-    })
   });
 });

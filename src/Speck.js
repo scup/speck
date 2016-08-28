@@ -1,7 +1,3 @@
-import SpeckValidatorAdapters from './validatorAdapters';
-import SpeckCollection from './SpeckCollection';
-import objectsByKey from './typeBuilders/objectsByKey';
-
 const createGetterAndSetter = function (instance, field){
   return {
     set: function (value){
@@ -182,17 +178,5 @@ class Speck {
     } , {});
   }
 }
-
-Speck.Types = { objectsByKey };
-
-Speck.Types = Speck.Types;
-Speck.Collection = SpeckCollection;
-Speck.Types = { objectsByKey };
-Speck.validatorAdapter = SpeckValidatorAdapters;
-
-export const Entity = Speck;
-export const Types =  Speck.Types;
-export const Collection = Speck.Collection;
-export const validatorAdapter = Speck.validatorAdapter;
 
 export default Speck;

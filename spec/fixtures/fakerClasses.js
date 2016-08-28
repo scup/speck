@@ -1,7 +1,7 @@
 import Faker from 'faker';
 import { PropTypes } from 'react';
 
-import Speck, { Collection } from '../../src/Speck';
+import Speck from '../../src/Speck';
 
 const defaultField = Faker.name.firstName();
 const defaultValue = Faker.name.firstName();
@@ -34,14 +34,6 @@ ProductEntity.SCHEMA = {
   name: alwaysTruth,
   price: alwaysTruth
 };
-
-class ProductEntityCollection extends Collection {
-  getSortedItemsByName() {
-    return this.sortBy('name');
-  }
-}
-
-ProductEntityCollection.TYPE = ProductEntity;
 
 class Validatable extends Speck { }
 Validatable.SCHEMA = {
@@ -90,15 +82,6 @@ FatherWithObjectEntity.SCHEMA = {
   }
 }
 
-class ChildWithChildArray extends Speck { }
-ChildWithChildArray.SCHEMA = {
-  name: PropTypes.string,
-  children: {
-      validator: PropTypes.arrayOf(PropTypes.instanceOf(ChildWithChildArray)),
-      type: ChildWithChildArray
-  }
-};
-
 class FakeEntityWithExcludeContext extends Speck { }
 FakeEntityWithExcludeContext.SCHEMA = {
     id: PropTypes.number.isRequired,
@@ -145,12 +128,10 @@ Object.assign(exports, {
   defaultValue,
   FakeEntityWithDefault,
   ProductEntity,
-  ProductEntityCollection,
   Validatable,
   ChildrenEntity,
   FatherEntity,
   FatherWithObjectEntity,
-  ChildWithChildArray,
   FakeEntityWithExcludeContext,
   FakeEntityWithIncludeContext,
   FakeEntityWithCustomValidationWithContext
