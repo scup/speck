@@ -1,7 +1,8 @@
 import Faker from 'faker';
 import { PropTypes } from 'react';
+import { noop } from 'lodash';
 
-import Speck, { Collection } from '../../src/Speck';
+import Speck from '../../src/Speck';
 
 const defaultField = Faker.name.firstName();
 const defaultValue = Faker.name.firstName();
@@ -14,17 +15,6 @@ const fooValidator = function (data, propName){
 
 class FakeEntityWithDefault extends Speck { }
 
-FakeEntityWithDefault.SCHEMA = {
-  [defaultField]: {
-    validator: function (){},
-    defaultValue: defaultValue
-  },
-  [`_${defaultField}`]: {
-    validator: function (){},
-    defaultValue: `_${defaultValue}`
-  },
-};
-
 function alwaysTruth(){
   return true;
 }
@@ -34,14 +24,6 @@ ProductEntity.SCHEMA = {
   name: alwaysTruth,
   price: alwaysTruth
 };
-
-class ProductEntityCollection extends Collection {
-  getSortedItemsByName() {
-    return this.sortBy('name');
-  }
-}
-
-ProductEntityCollection.TYPE = ProductEntity;
 
 class Validatable extends Speck { }
 Validatable.SCHEMA = {
@@ -65,13 +47,36 @@ ChildrenEntity.SCHEMA = {
   foo: fooValidator
 };
 
+FakeEntityWithDefault.SCHEMA = {
+  [defaultField]: {
+    validator: noop,
+    defaultValue: defaultValue
+  },
+  [`_${defaultField}`]: {
+    validator: noop,
+    defaultValue: `_${defaultValue}`
+  },
+  child: {
+    validator: PropTypes.instanceOf(ChildrenEntity),
+    type: ChildrenEntity
+  },
+  children: {
+    validator: PropTypes.arrayOf(PropTypes.instanceOf(ChildrenEntity)),
+    type: ChildrenEntity
+  }
+};
+
 class FatherEntity extends Speck { }
 FatherEntity.SCHEMA = {
   foo: {
     validator: fooValidator,
     defaultValue: 'bar'
   }, children: {
-    validator: function (){},
+    validator: noop,
+    type: ChildrenEntity
+  },
+  child: {
+    validator: noop,
     type: ChildrenEntity
   }
 };
@@ -89,15 +94,6 @@ FatherWithObjectEntity.SCHEMA = {
     }
   }
 }
-
-class ChildWithChildArray extends Speck { }
-ChildWithChildArray.SCHEMA = {
-  name: PropTypes.string,
-  children: {
-      validator: PropTypes.arrayOf(PropTypes.instanceOf(ChildWithChildArray)),
-      type: ChildWithChildArray
-  }
-};
 
 class FakeEntityWithExcludeContext extends Speck { }
 FakeEntityWithExcludeContext.SCHEMA = {
@@ -145,12 +141,10 @@ Object.assign(exports, {
   defaultValue,
   FakeEntityWithDefault,
   ProductEntity,
-  ProductEntityCollection,
   Validatable,
   ChildrenEntity,
   FatherEntity,
   FatherWithObjectEntity,
-  ChildWithChildArray,
   FakeEntityWithExcludeContext,
   FakeEntityWithIncludeContext,
   FakeEntityWithCustomValidationWithContext

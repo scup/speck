@@ -1,44 +1,56 @@
 import { expect } from 'chai';
 import Faker from 'faker';
-import Joi from 'joi';
 import sinon from 'sinon';
 
-import { Entity, Collection, validatorAdapter } from '../src/Speck';
+import Speck from '../src/Speck';
 
 import {
   defaultField,
   defaultValue,
   FakeEntityWithDefault,
   ProductEntity,
-  ProductEntityCollection,
   Validatable,
   ChildrenEntity,
   FatherEntity,
   FatherWithObjectEntity,
-  ChildWithChildArray,
   FakeEntityWithExcludeContext,
   FakeEntityWithIncludeContext,
   FakeEntityWithCustomValidationWithContext
 } from './fixtures/fakerClasses';
 
-describe('Speck', function (){
-  it('should merge with default data', function (){
+describe('Speck', () => {
+  it('merges with default data', () => {
     const fakeEntity = new FakeEntityWithDefault();
     expect(fakeEntity[defaultField]).to.equal(defaultValue);
   });
 
-  it('should clean data on fetch', function (){
+  it('cleans data on fetch', () => {
     const fakeEntity = new FakeEntityWithDefault({
       fakeAttribute: 'should not come'
     });
 
-    expect(fakeEntity.toJSON()).to.deep.equal({
+    expect(fakeEntity.fetch()).to.deep.equal({
       [defaultField]: defaultValue,
       [`_${defaultField}`]: `_${defaultValue}`
     });
   });
 
-  it('should create set for property and call validate when change', function (){
+  it('cleans data on toJSON', () => {
+    const fakeEntity = new FakeEntityWithDefault({
+      fakeAttribute: 'should not come',
+      children: [{ foo: 'bar' }],
+      child: { foo: 'bar' }
+    });
+
+    expect(fakeEntity.toJSON()).to.deep.equal({
+      [defaultField]: defaultValue,
+      [`_${defaultField}`]: `_${defaultValue}`,
+      child: { foo: 'bar' },
+      children: [{ foo: 'bar' }]
+    });
+  });
+
+  it('creates set for property and call validate when change', () => {
     const fakeEntity = new FakeEntityWithDefault();
     sinon.spy(fakeEntity, '_validate');
 
@@ -49,7 +61,7 @@ describe('Speck', function (){
     sinon.assert.calledOnce(fakeEntity._validate);
   });
 
-  it('should not use defaultValue when a value is passed', function (){
+  it('does not use defaultValue when a value is passed', () => {
     const newValue = Faker.name.findName();
     const fakeEntity = new FakeEntityWithDefault({
       [defaultField]: newValue
@@ -59,7 +71,7 @@ describe('Speck', function (){
     expect(fakeEntity[defaultField]).to.equal(newValue);
   });
 
-  it('should validate when build', function (){
+  it('validates when build', () => {
     // given
     sinon.spy(Validatable.SCHEMA, 'field');
     sinon.spy(Validatable.SCHEMA.otherField, 'validator');
@@ -85,7 +97,7 @@ describe('Speck', function (){
     );
   });
 
-  it('should auto validate', function (){
+  it('validates automatically', () => {
     // when
     const entity = new Validatable({ field: 'invalid', otherField: 'invalid'});
 
@@ -97,8 +109,8 @@ describe('Speck', function (){
     expect(entity.valid).to.equal(true);
   });
 
-  describe('children', function (){
-    it('should auto build child entities of array', function (){
+  describe('children', () => {
+    it('builds automatically child entities of array', () => {
       const father = new FatherEntity({
         children: [
           {},
@@ -110,7 +122,7 @@ describe('Speck', function (){
       expect(father.children[1].constructor).to.equal(ChildrenEntity);
     });
 
-    it('should auto build using the parameter builder', () => {
+    it('builds automatically using the parameter builder', () => {
       const father = new FatherWithObjectEntity({
         children: {
           content: { field: 'foo' },
@@ -122,128 +134,28 @@ describe('Speck', function (){
       expect(father.children.tweet.constructor).to.equal(ChildrenEntity);
     });
 
-    it('should include errors of children', function (){
+    it('includes errors of children', () => {
       const father = new FatherEntity({
         foo: 'test',
-        children: [{ foo: 'bar' }]
+        children: [{ foo: '2bar' }, { foo: 'bar' }, { foo: '2bar' }],
+        child: { foo: '2bar' }
       });
-
-      expect(father.getErrors()).to.deep.equal({ foo: { errors: [ 'foo accepts just \'bar\' as value' ] } });
-
-      const lee = new ChildrenEntity({ foo: 'bar invalid '});
-      father.children.push(lee);
 
       expect(father.getErrors()).to.deep.equal({
         foo: { errors: [ 'foo accepts just \'bar\' as value' ] },
-        children: { 1: { foo: { errors: [ 'foo accepts just \'bar\' as value' ] } } }
+        child: {
+          '0': { foo: { 'errors': [ 'foo accepts just \'bar\' as value' ] } }
+        },
+        children: {
+          '0': { foo: { 'errors': [ 'foo accepts just \'bar\' as value' ] } },
+          '2': { foo: { 'errors': [ 'foo accepts just \'bar\' as value' ] } }
+        }
       });
     });
   });
 
-
-  describe('collection', function (){
-
-    it('should return a collection of object', function (){
-
-      const products = [
-        {
-          name: 'A',
-          price: 10
-        },
-        {
-          name: 'B',
-          price: 2
-        },
-      ];
-
-      const collection = new ProductEntityCollection(products);
-      const results = collection.filter({name: 'A'}).result();
-
-      expect(results[0].toJSON()).to.deep.equal({ name: 'A', price: 10 });
-    });
-
-    it('should return a collection similar with keyBy/lodash ', function (){
-      const products = [
-        {
-          name: 'A',
-          price: 1
-        },
-        {
-          name: 'B',
-          price: 2
-        },
-      ];
-
-      const collection = new ProductEntityCollection(products);
-      const product = collection
-                        .filter({ name: 'B' })
-                        .keyBy('name');
-
-      expect(!!product.B).to.equal(true);
-      expect(product.B.name).to.deep.equal(products[1].name);
-      expect(product.B.price).to.deep.equal(products[1].price);
-    });
-
-    it('should return a collection ordered by name ', function (){
-
-      const products = [
-        {
-          name: 'B'
-        },
-        {
-          name: 'C',
-          price: 2
-        },
-        {
-          name: 'A'
-        }
-      ];
-
-      const collection = new ProductEntityCollection(products);
-      const results = collection.getSortedItemsByName().result();
-
-      expect(results[0].toJSON()).to.deep.equal({ name: 'A'});
-      expect(results[1].toJSON()).to.deep.equal({ name: 'B'});
-      expect(results[2].toJSON()).to.deep.equal({ name: 'C', price: 2 });
-    });
-
-    it('concat a list with another list ', function (){
-
-      const listA = [
-        {
-          name: 'AAA'
-        }
-      ];
-
-      const listB = [
-        {
-          name: 'BBB'
-        }
-      ];
-
-      const collection = new ProductEntityCollection(listA);
-      const results = collection.concat(listB).result();
-    });
-
-    it('it should build itself along with childs which is of type itself', () => {
-      const childWithChildArray = new ChildWithChildArray({
-          name: 'Node1',
-          children: [{
-              name: 'Node1.1',
-              children: [{
-                  name: 'Node 1.1.1'
-              }]
-          }]
-      });
-
-      expect(childWithChildArray.constructor).to.equal(ChildWithChildArray);
-      expect(childWithChildArray.children[0].constructor).to.equal(ChildWithChildArray);
-    });
-  });
-
-  describe('Contextual validation', function (){
-
-    it('it should set contexts excluded', () => {
+  describe('validateContext', () => {
+    it('sets contexts excluded', () => {
       const fakeEntityWithContext = new FakeEntityWithExcludeContext({
         name: 'Node1'
       });
@@ -257,7 +169,7 @@ describe('Speck', function (){
       expect(contextValidated.requiredProp3).to.be.undefined;
     });
 
-    it('it should set contexts include', () => {
+    it('sets contexts include', () => {
       const fakeEntityWithContext = new FakeEntityWithIncludeContext({
         name: 'Node1'
       });
@@ -271,7 +183,7 @@ describe('Speck', function (){
       expect(contextValidated.requiredProp3).to.be.undefined;
     });
 
-    it('it should set custom validations', () => {
+    it('sets custom validations', () => {
       const fakeEntityWithContext = new FakeEntityWithCustomValidationWithContext({
         id: 1,
         requiredProp1: -1
@@ -286,38 +198,12 @@ describe('Speck', function (){
       expect(fakeEntityWithContext.errors.requiredProp1).to.be.undefined;
 
     });
-  });
 
-  describe('Joi Validator', function (){
-    let myData,
-        joiAdapter;
+    it('returns the errors when then context does not exist', () => {
+      const entity = new ProductEntity({ foo: 'bar' });
+      const errors = entity.validateContext('noValidContext');
 
-    beforeEach(() => {
-      joiAdapter = validatorAdapter('joi', Joi);
-      myData = {
-        myStringProp: 'Some text',
-        httpURLProp: 'http://mysite.com',
-        httpsURLProp: 'https://mysite.com',
-        ftpURLProp: 'ftp://myftp.com',
-      };
+      expect(errors).to.deep.equal(entity.getErrors());
     });
-
-    it('should validate if value is equal string', () => {
-      const myStringValidator = joiAdapter(Joi.string());
-      expect(myStringValidator(myData, 'myStringProp')).to.be.undefined;
-    });
-
-    it('should validate if string have URL format', () => {
-      const myURLValidator = joiAdapter( Joi.string().uri({ scheme: [
-        'http',
-        'https'
-      ]}) );
-      expect(myURLValidator(myData, 'httpURLProp')).to.be.undefined;
-      expect(myURLValidator(myData, 'httpsURLProp')).to.be.undefined;
-      const expectedMsg = 'JoiValidationError: child "ftpURLProp" fails '+
-                          'because ["ftpURLProp" must be a valid uri with a '+
-                          'scheme matching the http|https pattern]';
-      expect(myURLValidator(myData, 'ftpURLProp').message).to.equal(expectedMsg);
-    })
   });
 });

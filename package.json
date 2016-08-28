@@ -2,7 +2,7 @@
   "name": "speck-entity",
   "version": "0.1.2",
   "description": "Domain entities with reactive validation",
-  "main": "lib/Speck.js",
+  "main": "lib/index.js",
   "scripts": {
     "test": "find ./spec -name '*.spec.js' | NODE_ENV=test xargs mocha --compilers js:babel-register --reporter spec",
     "test:watch": "npm test -- --watch",
@@ -21,7 +21,7 @@
       "text-summary"
     ],
     "exclude": [
-      "spec/**/*.spec.js",
+      "spec/**/*",
       "node_modules/**/*"
     ]
   },
@@ -44,7 +44,6 @@
   "dependencies": {
     "babel-cli": "^6.10.1",
     "babel-preset-es2015": "^6.9.0",
-    "babel-preset-stage-1": "6.5.0",
     "lodash": "^4.6.1"
   },
   "devDependencies": {

@@ -1,6 +1,4 @@
-import SpeckValidatorAdapters from './validatorAdapters';
-import SpeckCollection from './SpeckCollection';
-import objectsByKey from './typeBuilders/objectsByKey';
+import { get } from 'lodash';
 
 const createGetterAndSetter = function (instance, field){
   return {
@@ -61,9 +59,9 @@ class Speck {
     if (Array.isArray(fieldValue)){
       return fieldValue.map(this._fetchChild)
     }
-    if (fieldValue)
-    if (fieldValue.fetch){
-      return fieldValue.fetch();
+
+    if (fieldValue && typeof(fieldValue.toJSON) === 'function'){
+      return fieldValue.toJSON();
     }
 
     return fieldValue
@@ -77,11 +75,7 @@ class Speck {
     const error = validator(this.data, field, this.constructor.name + 'Entity');
 
     if (error) {
-      if (!this.errors[field]) {
-        this.errors[field] = { errors : [] }
-      }
-
-      this.errors[field].errors.push(error.message || error);
+      this.errors[field] = { errors : [error.message || error] }
     }
   }
 
@@ -97,6 +91,21 @@ class Speck {
     if(!this.valid) {
       return this.errors;
     }
+  }
+
+  _includeChildErrors(field, errors, entity, index) {
+    if(!entity.valid) {
+      if(errors[field] === undefined) { errors[field] = {} }
+
+      errors[field][index] = entity.getErrors();
+    }
+    return errors;
+  }
+
+  _getChildrenErrors(errors, field) {
+    const children = Array.isArray(this[field]) ? this[field] : [this[field]];
+
+    return children.reduce(this._includeChildErrors.bind(this, field), errors);
   }
 
   applyEntityConstructor(field, data) {
@@ -131,26 +140,13 @@ class Speck {
   }
 
   getErrors() {
-    this._validate();
-    const errors = Object.assign({}, this.errors);
+    const errors = Object.assign({}, this._validate());
 
-    for(let field of this.childrenEntities) {
-      const children = Array.isArray(this[field]) ? this[field] : [this[field]];
-
-      children.forEach((entity, index) => {
-        if(!entity.valid) {
-          if(errors[field] === undefined) { errors[field] = {} }
-
-          errors[field][index] = entity.getErrors();
-        }
-      })
-    }
-
-    return errors;
+    return this.childrenEntities.reduce(this._getChildrenErrors.bind(this), errors);
   }
 
   validateContext(context){
-    if(!this.contexts[context]) return this.errors;
+    if(!get(this.contexts, context)) return this.errors;
 
     let validation = () => true;
     if(this.contexts[context].exclude && Object.keys(this.contexts[context].exclude).length > 0){
@@ -182,17 +178,5 @@ class Speck {
     } , {});
   }
 }
-
-Speck.Types = { objectsByKey };
-
-Speck.Types = Speck.Types;
-Speck.Collection = SpeckCollection;
-Speck.Types = { objectsByKey };
-Speck.validatorAdapter = SpeckValidatorAdapters;
-
-export const Entity = Speck;
-export const Types =  Speck.Types;
-export const Collection = Speck.Collection;
-export const validatorAdapter = Speck.validatorAdapter;
 
 export default Speck;
