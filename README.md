@@ -44,14 +44,14 @@ class FatherEntity extends Speck {
 #### Get default values
 ```javascript
 const niceInstance = new MyEntity();
-console.log(niceInstance.fetch()); // { field: undefined, otherField: 10 }
+console.log(niceInstance.toJSON()); // { field: undefined, otherField: 10 }
 console.log(niceInstance.errors); // {}
 ```
 
 #### Validations
 ```javascript
 const buggedInstance = new MyEntity({ field: 10, otherField: 'value' });
-console.log(buggedInstance.fetch()); // { field: 10, otherField: 'value' }
+console.log(buggedInstance.toJSON()); // { field: 10, otherField: 'value' }
 console.log(buggedInstance.errors); /* or buggedInstance.getErrors() -- but... getErrors also includes children errors
   {
     field: {
@@ -87,14 +87,14 @@ const fatherInstance = new FatherEntity({
   }]  
 })
 console.log(fatherInstance.children[0]); //An instance of MyEntity
-console.log(fatherInstance.children[1].fetch());
+console.log(fatherInstance.children[1].toJSON());
 //{ field: 'B', otherField: 3 }
 ```
 
 #### Clean unexpected values
 ```javascript
 const anotherInstance = new MyEntity({ field: 'myString', fake: 'fake' });
-console.log(anotherInstance.fetch()); // { field: 'myString', otherField: 10 }
+console.log(anotherInstance.toJSON()); // { field: 'myString', otherField: 10 }
 ```
 To understand the validators [React PropTypes](https://facebook.github.io/react/docs/reusable-components.html)
 
