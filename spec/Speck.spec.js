@@ -29,7 +29,7 @@ describe('Speck', () => {
       fakeAttribute: 'should not come'
     });
 
-    expect(fakeEntity.fetch()).to.deep.equal({
+    expect(fakeEntity.toJSON()).to.deep.equal({
       [defaultField]: defaultValue,
       [`_${defaultField}`]: `_${defaultValue}`
     });
