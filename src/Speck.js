@@ -109,13 +109,13 @@ class Speck {
   }
 
   applyEntityConstructor(field, data) {
-    if (!data) return;
-
     const Type = field.type;
 
     if(field.builder) {
       return field.builder(data, Type);
     }
+
+    if (!data) return;
 
     if (Array.isArray(data)) {
       return data.map(instance => new Type(instance));
