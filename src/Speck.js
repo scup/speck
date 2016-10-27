@@ -64,7 +64,7 @@ class Speck {
       return fieldValue.toJSON();
     }
 
-    return fieldValue
+    return fieldValue;
   }
 
   __validateField(field) {
@@ -122,11 +122,6 @@ class Speck {
     }
 
     return new Type(data);
-  }
-
-  fetch() {
-    console.log('fetch() will be deprecated, use toJSON().')
-    return this.toJSON();
   }
 
   toJSON(){

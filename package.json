@@ -1,13 +1,14 @@
 {
   "name": "speck-entity",
-  "version": "0.1.2",
+  "version": "0.1.3",
   "description": "Domain entities with reactive validation",
   "main": "lib/index.js",
   "scripts": {
     "test": "find ./spec -name '*.spec.js' | NODE_ENV=test xargs mocha --compilers js:babel-register --reporter spec",
     "test:watch": "npm test -- --watch",
     "coverage": "nyc npm test",
-    "build": "babel src --out-dir lib --presets es2015"
+    "build": "babel src --out-dir lib --presets es2015",
+    "prepublish": "npm run build"
   },
   "nyc": {
     "branches": 95,
