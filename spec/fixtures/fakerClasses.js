@@ -15,6 +15,11 @@ const fooValidator = function (data, propName){
 
 class FakeEntityWithDefault extends Speck { }
 
+class FakeEntityWithBoolean extends Speck { }
+FakeEntityWithBoolean.SCHEMA = {
+  isDefault: PropTypes.bool
+};
+
 function alwaysTruth(){
   return true;
 }
@@ -140,6 +145,7 @@ Object.assign(exports, {
   defaultField,
   defaultValue,
   FakeEntityWithDefault,
+  FakeEntityWithBoolean,
   ProductEntity,
   Validatable,
   ChildrenEntity,

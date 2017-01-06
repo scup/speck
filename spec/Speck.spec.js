@@ -8,6 +8,7 @@ import {
   defaultField,
   defaultValue,
   FakeEntityWithDefault,
+  FakeEntityWithBoolean,
   ProductEntity,
   Validatable,
   ChildrenEntity,
@@ -19,6 +20,20 @@ import {
 } from './fixtures/fakerClasses';
 
 describe('Speck', () => {
+  it ('validates Boolean True context', () => {
+    const instance = new FakeEntityWithBoolean({
+      isDefault: true
+    });
+    expect(instance.isDefault).to.equal(true);
+  });
+
+  it ('validates Boolean False context', () => {
+    const instance = new FakeEntityWithBoolean({
+      isDefault: false
+    });
+    expect(instance.isDefault).to.equal(false);
+  });
+
   it('merges with default data', () => {
     const fakeEntity = new FakeEntityWithDefault();
     expect(fakeEntity[defaultField]).to.equal(defaultValue);
