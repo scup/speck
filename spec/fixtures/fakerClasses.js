@@ -24,6 +24,17 @@ function alwaysTruth(){
   return true;
 }
 
+class FakeEntityWithHetrogeneousElementList extends Speck {}
+FakeEntityWithHetrogeneousElementList.SCHEMA = {
+  elements: {
+    validator: noop,
+    builder: (dataList) => dataList.map(data => {
+      if (data.type === 'product') return new ProductEntity(data);
+      if (data.type === 'default') return new FakeEntityWithBoolean(data);
+    })
+  }
+};
+
 class ProductEntity extends Speck { }
 ProductEntity.SCHEMA = {
   name: alwaysTruth,
@@ -153,5 +164,6 @@ Object.assign(exports, {
   FatherWithObjectEntity,
   FakeEntityWithExcludeContext,
   FakeEntityWithIncludeContext,
-  FakeEntityWithCustomValidationWithContext
+  FakeEntityWithCustomValidationWithContext,
+  FakeEntityWithHetrogeneousElementList
 });
