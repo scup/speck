@@ -90,9 +90,8 @@ console.log(fatherInstance.children[0]); //An instance of MyEntity
 console.log(fatherInstance.children[1].toJSON());
 //{ field: 'B', otherField: 3 }
 ```
-#### Hetrogeneous Types using builder
-If you have a use case where you have a property whose values can be a list of multiple Types
-like 
+#### Builder
+When you need to create objects with custom verification like 
 ```javascript
     const elementList = {
         elements: [{

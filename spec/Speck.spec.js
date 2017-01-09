@@ -17,7 +17,7 @@ import {
   FakeEntityWithExcludeContext,
   FakeEntityWithIncludeContext,
   FakeEntityWithCustomValidationWithContext,
-  FakeEntityWithHetrogeneousElementList
+  FakeEntityWithCustomElementList
 } from './fixtures/fakerClasses';
 
 describe('Speck', () => {
@@ -127,7 +127,7 @@ describe('Speck', () => {
 
   describe('children', () => {
     it('builds Hetrogenerous types in a list automatically', () => {
-      const elementEntity = new FakeEntityWithHetrogeneousElementList({
+      const elementEntity = new FakeEntityWithCustomElementList({
         elements: [{
           type: 'product',
           name: true,

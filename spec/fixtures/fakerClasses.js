@@ -24,8 +24,8 @@ function alwaysTruth(){
   return true;
 }
 
-class FakeEntityWithHetrogeneousElementList extends Speck {}
-FakeEntityWithHetrogeneousElementList.SCHEMA = {
+class FakeEntityWithCustomElementList extends Speck {}
+FakeEntityWithCustomElementList.SCHEMA = {
   elements: {
     validator: noop,
     builder: (dataList) => dataList.map(data => {
@@ -165,5 +165,5 @@ Object.assign(exports, {
   FakeEntityWithExcludeContext,
   FakeEntityWithIncludeContext,
   FakeEntityWithCustomValidationWithContext,
-  FakeEntityWithHetrogeneousElementList
+  FakeEntityWithCustomElementList
 });
