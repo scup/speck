@@ -1,4 +1,4 @@
-import { get, isNil } from 'lodash';
+import { get, isNil, isFunction } from 'lodash';
 
 const createGetterAndSetter = function (instance, field){
   return {
@@ -46,7 +46,7 @@ class Speck {
 
       newData[field] = isNil(data[field]) ? this.schema[field].defaultValue: data[field];
 
-      if (this.schema[field].type) {
+      if (this.schema[field].type || this.schema[field].builder) {
         newData[field] = this.applyEntityConstructor(this.schema[field], newData[field]);
       }
 
@@ -111,7 +111,7 @@ class Speck {
   applyEntityConstructor(field, data) {
     const Type = field.type;
 
-    if(field.builder) {
+    if(isFunction(field.builder)) {
       return field.builder(data, Type);
     }
 
