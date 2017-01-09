@@ -90,7 +90,37 @@ console.log(fatherInstance.children[0]); //An instance of MyEntity
 console.log(fatherInstance.children[1].toJSON());
 //{ field: 'B', otherField: 3 }
 ```
-
+#### Hetrogeneous Types using builder
+If you have a use case where you have a property whose values can be a list of multiple Types
+like 
+```javascript
+    const elementList = {
+        elements: [{
+          type: 'product',
+          name: true,
+          price:  true
+        }, {
+          type: 'default',
+          isDefault: true
+        }]
+      };
+```
+In such cases you can define a builder as follows:
+```javascript
+class ElementList extends Speck {}
+ElementList.SCHEMA = {
+  elements: {
+    validator: noop,
+    builder: (dataList) => dataList.map(data => {
+      if (data.type === 'product') return new ProductEntity(data);
+      if (data.type === 'default') return new FakeEntityWithBoolean(data);
+    })
+  }
+};
+```
+By defining builder you tell Speck Entity that you take the responsibility of instansitating and 
+returning a new object of the type which suits you the best. 
+This is a powerful concept as it lets users dynamically create new types on the fly.
 #### Clean unexpected values
 ```javascript
 const anotherInstance = new MyEntity({ field: 'myString', fake: 'fake' });
