@@ -21,6 +21,46 @@ describe('SpeckCollection', function (){
     expect(results[0].toJSON()).to.deep.equal({ name: 'A', price: 10 });
   });
 
+  it('returns a POJO array from the collection', function (){
+
+    const products = [
+      {
+        name: 'A',
+        price: 10
+      },
+      {
+        name: 'B',
+        price: 2
+      },
+    ];
+
+    const collection = new ProductEntityCollection(products);
+
+    expect(JSON.stringify(collection.toJSON())).to.equal(JSON.stringify(products));
+  });
+
+  it('rebuild the collection based on the POJO array returned from the collection toJSON()', function (){
+
+    const products = [
+      {
+        name: 'A',
+        price: 10
+      },
+      {
+        name: 'B',
+        price: 2
+      },
+    ];
+
+    const collection = new ProductEntityCollection(products);
+    const collectionJSON = collection.toJSON();
+    const collection2 = new ProductEntityCollection(collectionJSON);
+
+    expect(collection).to.deep.equal(collection2);
+
+  });
+
+
   it('returns a collection similar with keyBy/lodash ', function (){
     const products = [
       {

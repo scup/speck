@@ -34,6 +34,10 @@ class SpeckCollection {
     });
   }
 
+  toJSON() {
+    return this.items.map(item => item.toJSON());
+  }
+
   result() {
     return this.items;
   }
