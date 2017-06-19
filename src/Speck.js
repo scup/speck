@@ -1,4 +1,4 @@
-import { get, isNil, isFunction } from 'lodash';
+import { get, isNil, isFunction, difference, intersection, first  } from 'lodash';
 
 const createGetterAndSetter = function (instance, field){
   return {
@@ -124,7 +124,7 @@ class Speck {
     return new Type(data);
   }
 
-  toJSON(){
+  toJSON() {
     let rawData = Object
       .keys(this.data)
       .reduce((data, field) => {
@@ -134,13 +134,34 @@ class Speck {
     return JSON.parse(JSON.stringify(rawData));
   }
 
+  toJSONByContext(context) {
+    if(!get(this.contexts, context)) return this.errors;
+
+    const contextOperator = first(Object.keys(this.contexts[context]))
+
+    const operation = {
+      include: (entityObj, include) => {
+        return intersection(Object.keys(entityObj), include)
+          .reduce((parsedObj, key) => Object.assign({}, parsedObj, { [key]: entityObj[key] }), {})
+      },
+      exclude: (entityObj, exclude) => {
+        return difference(Object.keys(entityObj), exclude)
+          .reduce((parsedObj, key) => Object.assign({}, parsedObj, { [key]: entityObj[key] }), {})
+      }
+    }
+
+    return (contextOperator !== undefined)
+      ? operation[contextOperator](this.toJSON(), this.contexts[context][contextOperator])
+      : this.errors
+  }
+
   getErrors() {
     const errors = Object.assign({}, this._validate());
 
     return this.childrenEntities.reduce(this._getChildrenErrors.bind(this), errors);
   }
 
-  validateContext(context){
+  validateContext(context) {
     if(!get(this.contexts, context)) return this.errors;
 
     let validation = () => true;

@@ -137,11 +137,11 @@ describe('Speck', () => {
           isDefault: true
         }]
       });
-      
+
       expect(elementEntity.elements[0].constructor).to.equal(ProductEntity);
       expect(elementEntity.elements[1].constructor).to.equal(FakeEntityWithBoolean);
   });
-    
+
     it('builds automatically child entities of array', () => {
       const father = new FatherEntity({
         children: [
@@ -185,6 +185,43 @@ describe('Speck', () => {
       });
     });
   });
+
+  describe('toJSONbyContext', () => {
+    it('cleans data on including context', () => {
+      const fakeEntityWithContext = new FakeEntityWithIncludeContext({
+        fakeAttribute: 'should not come',
+        id: 1,
+        requiredProp1: 1,
+        requiredProp2: 1,
+        requiredProp3: 1
+      });
+
+      expect(fakeEntityWithContext.toJSONByContext('create')).to.deep.equal({
+        requiredProp1: 1,
+        requiredProp2: 1
+      });
+    })
+
+    it('cleans data on excluding context', () => {
+      const fakeEntityWithContext = new FakeEntityWithExcludeContext({
+        fakeAttribute: 'should not come',
+        id: 1,
+        requiredProp1: 1,
+        requiredProp2: 1,
+        requiredProp3: 1
+      });
+
+      expect(fakeEntityWithContext.toJSONByContext('create')).to.deep.equal({
+        requiredProp1: 1,
+        requiredProp2: 1
+      });
+
+      expect(fakeEntityWithContext.toJSONByContext('edit')).to.deep.equal({
+        requiredProp1: 1,
+        requiredProp3: 1
+      });
+    })
+  })
 
   describe('validateContext', () => {
     it('sets contexts excluded', () => {
