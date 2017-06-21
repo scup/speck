@@ -134,10 +134,10 @@ class Speck {
     return JSON.parse(JSON.stringify(rawData));
   }
 
-  toJSONByContext(context) {
-    if(!get(this.contexts, context)) return this.errors;
+  toJSONContext(context) {
+    const contextOperator = first(Object.keys(get(this.contexts, context) || []))
 
-    const contextOperator = first(Object.keys(this.contexts[context]))
+    if(contextOperator === undefined) throw new Error('InvalidContext')
 
     const operation = {
       include: (entityObj, include) => {
@@ -150,9 +150,7 @@ class Speck {
       }
     }
 
-    return (contextOperator !== undefined)
-      ? operation[contextOperator](this.toJSON(), this.contexts[context][contextOperator])
-      : this.errors
+    return operation[contextOperator](this.toJSON(), this.contexts[context][contextOperator])
   }
 
   getErrors() {

@@ -196,7 +196,7 @@ describe('Speck', () => {
         requiredProp3: 1
       });
 
-      expect(fakeEntityWithContext.toJSONByContext('create')).to.deep.equal({
+      expect(fakeEntityWithContext.toJSONContext('create')).to.deep.equal({
         requiredProp1: 1,
         requiredProp2: 1
       });
@@ -211,15 +211,21 @@ describe('Speck', () => {
         requiredProp3: 1
       });
 
-      expect(fakeEntityWithContext.toJSONByContext('create')).to.deep.equal({
+      expect(fakeEntityWithContext.toJSONContext('create')).to.deep.equal({
         requiredProp1: 1,
         requiredProp2: 1
       });
 
-      expect(fakeEntityWithContext.toJSONByContext('edit')).to.deep.equal({
+      expect(fakeEntityWithContext.toJSONContext('edit')).to.deep.equal({
         requiredProp1: 1,
         requiredProp3: 1
       });
+    })
+
+    it('Should return Errors on invalid Context', () => {
+      const entity = new ProductEntity({ foo: 'bar' });
+
+      expect(entity.toJSONContext.bind(entity, 'noValidContext')).to.throw(Error, /InvalidContext/);
     })
   })
 
