@@ -9,6 +9,7 @@ import {
   defaultValue,
   FakeEntityWithDefault,
   FakeEntityWithBoolean,
+  FakeEntityWithObject,
   ProductEntity,
   Validatable,
   ChildrenEntity,
@@ -33,6 +34,14 @@ describe('Speck', () => {
       isDefault: false
     });
     expect(instance.isDefault).to.equal(false);
+  });
+
+  it ('does not change default value of field', () => {
+    const instance1 = new FakeEntityWithObject();
+    instance1.config.name = 'Speck';
+    const instance2 = new FakeEntityWithObject();
+    expect(instance2.config).to.not.have.property('name');
+    expect(instance1.config).to.not.equal(instance2.config);
   });
 
   it('merges with default data', () => {
@@ -137,11 +146,11 @@ describe('Speck', () => {
           isDefault: true
         }]
       });
-      
+
       expect(elementEntity.elements[0].constructor).to.equal(ProductEntity);
       expect(elementEntity.elements[1].constructor).to.equal(FakeEntityWithBoolean);
   });
-    
+
     it('builds automatically child entities of array', () => {
       const father = new FatherEntity({
         children: [
