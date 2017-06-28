@@ -20,6 +20,14 @@ FakeEntityWithBoolean.SCHEMA = {
   isDefault: PropTypes.bool
 };
 
+class FakeEntityWithObject extends Speck { }
+FakeEntityWithObject.SCHEMA = {
+  config: {
+    validator: PropTypes.object,
+    defaultValue: {}
+  }
+};
+
 function alwaysTruth(){
   return true;
 }
@@ -87,7 +95,8 @@ FatherEntity.SCHEMA = {
   foo: {
     validator: fooValidator,
     defaultValue: 'bar'
-  }, children: {
+  },
+  children: {
     validator: noop,
     type: ChildrenEntity
   },
@@ -157,6 +166,7 @@ Object.assign(exports, {
   defaultValue,
   FakeEntityWithDefault,
   FakeEntityWithBoolean,
+  FakeEntityWithObject,
   ProductEntity,
   Validatable,
   ChildrenEntity,
