@@ -130,6 +130,7 @@ To understand the validators [React PropTypes](https://facebook.github.io/react/
 ### Well known issues
   - Create helpers for relationships validations(Like, mininum, maximum)
   - Create identifier and equal comparison
+  - Type builders and/or custom builders are not being applied on instance setters
 
 ### Contextual validation
 ```javascript
