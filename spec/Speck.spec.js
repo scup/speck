@@ -149,7 +149,7 @@ describe('Speck', () => {
 
       expect(elementEntity.elements[0].constructor).to.equal(ProductEntity);
       expect(elementEntity.elements[1].constructor).to.equal(FakeEntityWithBoolean);
-  });
+    });
 
     it('builds automatically child entities of array', () => {
       const father = new FatherEntity({
