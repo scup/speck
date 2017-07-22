@@ -87,6 +87,10 @@ FakeEntityWithDefault.SCHEMA = {
   children: {
     validator: PropTypes.arrayOf(PropTypes.instanceOf(ChildrenEntity)),
     type: ChildrenEntity
+  },
+  functionAsDefault: {
+    validator: PropTypes.func,
+    defaultValue: () => 'I should not be an object'
   }
 };
 

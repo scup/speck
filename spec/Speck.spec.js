@@ -85,6 +85,14 @@ describe('Speck', () => {
       expect(fakeEntity[`_${defaultField}`]).to.equal(`_${defaultValue}`);
       expect(fakeEntity[defaultField]).to.equal(newValue);
     });
+
+    it('does not hava default functions as objects', () => {
+      const fakeEntity = new FakeEntityWithDefault();
+      const fakeEntity2 = new FakeEntityWithDefault();
+
+      expect(fakeEntity.functionAsDefault).to.be.instanceOf(Function);
+      expect(fakeEntity.functionAsDefault).to.not.equal(fakeEntity2.functionAsDefault);
+    });
   });
 
   it('validates when build', () => {
