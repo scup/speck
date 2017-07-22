@@ -36,64 +36,55 @@ describe('Speck', () => {
     expect(instance.isDefault).to.equal(false);
   });
 
-  it ('does not change default value of field', () => {
-    const instance1 = new FakeEntityWithObject();
-    instance1.config.name = 'Speck';
-    const instance2 = new FakeEntityWithObject();
-    expect(instance2.config).to.not.have.property('name');
-    expect(instance1.config).to.not.equal(instance2.config);
-  });
-
-  it('merges with default data', () => {
-    const fakeEntity = new FakeEntityWithDefault();
-    expect(fakeEntity[defaultField]).to.equal(defaultValue);
-  });
-
-  it('cleans data on fetch', () => {
-    const fakeEntity = new FakeEntityWithDefault({
-      fakeAttribute: 'should not come'
+  describe('defaultValue', () => {
+    it ('does not change default value of field', () => {
+      const instance1 = new FakeEntityWithObject();
+      instance1.config.name = 'Speck';
+      const instance2 = new FakeEntityWithObject();
+      expect(instance2.config).to.not.have.property('name');
+      expect(instance1.config).to.not.equal(instance2.config);
     });
 
-    expect(fakeEntity.toJSON()).to.deep.equal({
-      [defaultField]: defaultValue,
-      [`_${defaultField}`]: `_${defaultValue}`
-    });
-  });
-
-  it('cleans data on toJSON', () => {
-    const fakeEntity = new FakeEntityWithDefault({
-      fakeAttribute: 'should not come',
-      children: [{ foo: 'bar' }],
-      child: { foo: 'bar' }
+    it('merges with default data', () => {
+      const fakeEntity = new FakeEntityWithDefault();
+      expect(fakeEntity[defaultField]).to.equal(defaultValue);
     });
 
-    expect(fakeEntity.toJSON()).to.deep.equal({
-      [defaultField]: defaultValue,
-      [`_${defaultField}`]: `_${defaultValue}`,
-      child: { foo: 'bar' },
-      children: [{ foo: 'bar' }]
-    });
-  });
+    it('cleans data on toJSON', () => {
+      const fakeEntity = new FakeEntityWithDefault({
+        fakeAttribute: 'should not come',
+        children: [{ foo: 'bar' }],
+        child: { foo: 'bar' }
+      });
 
-  it('creates set for property and call validate when change', () => {
-    const fakeEntity = new FakeEntityWithDefault();
-    sinon.spy(fakeEntity, '_validate');
-
-    fakeEntity[`_${defaultField}`] = `_${defaultValue}`;
-    sinon.assert.notCalled(fakeEntity._validate);
-
-    fakeEntity[`_${defaultField}`] = defaultValue;
-    sinon.assert.calledOnce(fakeEntity._validate);
-  });
-
-  it('does not use defaultValue when a value is passed', () => {
-    const newValue = Faker.name.findName();
-    const fakeEntity = new FakeEntityWithDefault({
-      [defaultField]: newValue
+      expect(fakeEntity.toJSON()).to.deep.equal({
+        [defaultField]: defaultValue,
+        [`_${defaultField}`]: `_${defaultValue}`,
+        child: { foo: 'bar' },
+        children: [{ foo: 'bar' }]
+      });
     });
 
-    expect(fakeEntity[`_${defaultField}`]).to.equal(`_${defaultValue}`);
-    expect(fakeEntity[defaultField]).to.equal(newValue);
+    it('creates set for property and call validate when change', () => {
+      const fakeEntity = new FakeEntityWithDefault();
+      sinon.spy(fakeEntity, '_validate');
+
+      fakeEntity[`_${defaultField}`] = `_${defaultValue}`;
+      sinon.assert.notCalled(fakeEntity._validate);
+
+      fakeEntity[`_${defaultField}`] = defaultValue;
+      sinon.assert.calledOnce(fakeEntity._validate);
+    });
+
+    it('does not use defaultValue when a value is passed', () => {
+      const newValue = Faker.name.findName();
+      const fakeEntity = new FakeEntityWithDefault({
+        [defaultField]: newValue
+      });
+
+      expect(fakeEntity[`_${defaultField}`]).to.equal(`_${defaultValue}`);
+      expect(fakeEntity[defaultField]).to.equal(newValue);
+    });
   });
 
   it('validates when build', () => {
