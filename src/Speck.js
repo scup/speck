@@ -44,11 +44,10 @@ class Speck {
 
     if (hasValue) return data[field];
 
-    const isFunction = this.schema[field].defaultValue instanceof Function;
+    const defaultValue = this.schema[field].defaultValue
+    const isFunction = defaultValue instanceof Function;
 
-    if (isFunction) return this.schema[field].defaultValue.bind(this);
-
-    return clone(this.schema[field].defaultValue);
+    return isFunction ? defaultValue : clone(this.schema[field].defaultValue);
   }
 
   _mergeDefault(data) {

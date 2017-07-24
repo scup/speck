@@ -91,7 +91,6 @@ describe('Speck', () => {
       const fakeEntity2 = new FakeEntityWithDefault();
 
       expect(fakeEntity.functionAsDefault).to.be.instanceOf(Function);
-      expect(fakeEntity.functionAsDefault).to.not.equal(fakeEntity2.functionAsDefault);
     });
   });
 
