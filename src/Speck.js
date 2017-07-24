@@ -39,7 +39,7 @@ class Speck {
     this._validate();
   }
 
-  __initFieldvalue(field, data) {
+  __initFieldValue(field, data) {
     const hasValue = !isNil(data[field]);
 
     if (hasValue) return data[field];
@@ -55,7 +55,7 @@ class Speck {
     const newData = {};
     let field;
     for(field in this.schema){
-      newData[field] = this.__initFieldvalue(field, data);
+      newData[field] = this.__initFieldValue(field, data);
 
       if (this.schema[field].type || this.schema[field].builder) {
         newData[field] = this.applyEntityConstructor(this.schema[field], newData[field]);

@@ -86,7 +86,7 @@ describe('Speck', () => {
       expect(fakeEntity[defaultField]).to.equal(newValue);
     });
 
-    it('does not hava default functions as objects', () => {
+    it('does not have default functions as objects', () => {
       const fakeEntity = new FakeEntityWithDefault();
       const fakeEntity2 = new FakeEntityWithDefault();
 
