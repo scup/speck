@@ -246,5 +246,28 @@ describe('Speck', () => {
 
       expect(errors).to.deep.equal(entity.getErrors());
     });
+
+    it('returns valid when validateContext has no errors', () => {
+      const fakeEntityWithContext = new FakeEntityWithExcludeContext({
+        requiredProp1: 1,
+        requiredProp2: 2
+      });
+
+      const contextValidated = fakeEntityWithContext.validateContext('create');
+      console.log(contextValidated)
+
+      expect(contextValidated.valid).to.equal(true);
+    })
+
+    it('returns invalid when validateContext has errors', () => {
+      const fakeEntityWithContext = new FakeEntityWithExcludeContext({
+        id: 1,
+        requiredProp3: 2
+      });
+
+      const contextValidated = fakeEntityWithContext.validateContext('create');
+
+      expect(contextValidated.valid).to.equal(false);
+    })
   });
 });

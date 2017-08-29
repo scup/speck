@@ -167,10 +167,12 @@ class Speck {
 
     const errors = Object.keys(contextErrors).filter(validation);
 
-    return errors.reduce((newError,errorField)=>{
+    const contextValidation = errors.reduce((newError,errorField)=>{
       newError[errorField] = contextErrors[errorField];
       return newError;
     } , {});
+
+    return Object.assign({ valid: !Object.keys(contextValidation).length }, contextValidation)
   }
 }
 
