@@ -144,13 +144,24 @@ To understand the validators [React PropTypes](https://facebook.github.io/react/
 
       static CONTEXTS = {
         create: { exclude: [ 'requiredProp2', 'requiredProp3' ] },
-        edit: { include: [ 'id', 'requiredProp1', 'requiredProp2' ] }
+        edit: { include: [ 'id', 'requiredProp1', 'requiredProp2' ] },
+        onlyId: { include: [ 'id' ] }        
       }
   }
 
    const myEntity = new FakeEntityWithIncludeContext({ id: 1 });
-   console.log(anotherInstance.validateContext('create'));  //{ requiredProp1: { errors: [ ... ] } }
-   console.log(anotherInstance.validateContext('edit'));  //{ requiredProp1: { errors: [ ... ] }, requiredProp2: { errors: [ ... ] } }
+
+   const contextCreate = myEntity.validateContext('create');
+   console.log(contextCreate.errors); // { requiredProp1: { errors: [ ... ] } }
+   console.log(contextCreate.valid); // false
+
+   const contextEdit = myEntity.validateContext('edit');
+   console.log(contextEdit.errors); // { requiredProp1: { errors: [ ... ] }, requiredProp2: { errors: [ ... ] } }
+   console.log(contextEdit.valid); // false
+
+   const contextOnlyId = myEntity.validateContext('onlyId')
+   console.log(contextOnlyId.errors); // {}
+   console.log(contextOnlyId.valid); // true
 ```
   Each context (create and edit in example above), could have _include_ property OR  _exclude_, the _include_ property receives the properties that will be validated in this context,
   and the _exclude_ property represents the properties that will be ignored on validation.
