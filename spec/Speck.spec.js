@@ -252,7 +252,6 @@ describe('Speck', () => {
       });
 
       const contextValidated = fakeEntityWithContext.validateContext('create');
-      console.log(contextValidated)
 
       expect(contextValidated.valid).to.equal(true);
     })
