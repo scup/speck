@@ -39,12 +39,22 @@ class Speck {
     this._validate();
   }
 
+  __initFieldValue(field, data) {
+    const hasValue = !isNil(data[field]);
+
+    if (hasValue) return data[field];
+
+    const defaultValue = this.schema[field].defaultValue
+    const isFunction = defaultValue instanceof Function;
+
+    return isFunction ? defaultValue : clone(this.schema[field].defaultValue);
+  }
+
   _mergeDefault(data) {
     const newData = {};
     let field;
     for(field in this.schema){
-
-      newData[field] = isNil(data[field]) ? clone(this.schema[field].defaultValue): data[field];
+      newData[field] = this.__initFieldValue(field, data);
 
       if (this.schema[field].type || this.schema[field].builder) {
         newData[field] = this.applyEntityConstructor(this.schema[field], newData[field]);
