@@ -1,24 +1,25 @@
-import { PropTypes } from 'react';
+const Joi = require('joi')
+const joiAdapter = require('validatorAdapters')('joi', Joi)
 
-import Speck from '../../src/Speck';
-import SpeckCollection from '../../src/SpeckCollection';
-import { ProductEntity } from './fakerClasses';
+const Speck = require('Speck')
+const SpeckCollection = require('SpeckCollection')
+const { ProductEntity } = require('./fakerClasses')
 
 class ProductEntityCollection extends SpeckCollection {
-  getSortedItemsByName() {
-    return this.sortBy('name');
+  getSortedItemsByName () {
+    return this.sortBy('name')
   }
 }
 
-ProductEntityCollection.TYPE = ProductEntity;
+ProductEntityCollection.TYPE = ProductEntity
 
 class ChildWithChildArray extends Speck { }
 ChildWithChildArray.SCHEMA = {
-  name: PropTypes.string,
+  name: joiAdapter(Joi.string()),
   children: {
-      validator: PropTypes.arrayOf(PropTypes.instanceOf(ChildWithChildArray)),
-      type: ChildWithChildArray
+    validator: joiAdapter(Joi.array().items(Joi.object().type(ChildWithChildArray))),
+    type: ChildWithChildArray
   }
-};
+}
 
-Object.assign(exports, { ProductEntityCollection, ChildWithChildArray });
+Object.assign(exports, { ProductEntityCollection, ChildWithChildArray })

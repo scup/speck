@@ -1,18 +1,18 @@
-import Speck from './Speck.js';
+const Speck = require('./Speck.js')
 
-import SpeckValidatorAdapters from './validatorAdapters';
-import SpeckCollection from './SpeckCollection';
-import objectsByKey from './typeBuilders/objectsByKey';
+const SpeckValidatorAdapters = require('./validatorAdapters')
+const SpeckCollection = require('./SpeckCollection')
+const objectsByKey = require('./typeBuilders/objectsByKey')
 
 Object.assign(Speck, {
   Types: { objectsByKey },
   Collection: SpeckCollection,
   validatorAdapter: SpeckValidatorAdapters
-});
+})
 
-export const Entity = Speck;
-export const Types =  Speck.Types;
-export const Collection = Speck.Collection;
-export const validatorAdapter = Speck.validatorAdapter;
-
-export default Speck;
+module.exports = Object.assign({}, Speck, {
+  Entity: Speck,
+  Types: Speck.Types,
+  Collection: Speck.Collection,
+  validatorAdapter: Speck.validatorAdapter
+})

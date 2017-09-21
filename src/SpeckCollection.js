@@ -1,4 +1,4 @@
-import _ from 'lodash';
+const _ = require('lodash')
 
 const LODASH_METHODS = [
   'chunk', 'compact', 'concat', 'countBy', 'difference',
@@ -21,43 +21,43 @@ const LODASH_METHODS = [
   'unionWith', 'uniq', 'uniqBy', 'uniqWith', 'unzip', 'unzipWith',
   'without', 'xor', 'xorBy', 'xorWith', 'zip', 'zipObject',
   'zipObjectDeep', 'zipWith'
-];
+]
 
 class SpeckCollection {
-  constructor(data) {
-    this.items = _.map(data, ( item ) => {
-      if( _.isNil(item) || _.isPlainObject(item) ) {
-        return new this.constructor.TYPE(item);
+  constructor (data) {
+    this.items = _.map(data, (item) => {
+      if (_.isNil(item) || _.isPlainObject(item)) {
+        return new this.constructor.TYPE(item)
       }
 
-      return item;
-    });
+      return item
+    })
   }
 
-  toJSON() {
-    return this.items.map(item => item.toJSON());
+  toJSON () {
+    return this.items.map(item => item.toJSON())
   }
 
-  result() {
-    return this.items;
+  result () {
+    return this.items
   }
 }
 
 const reduceToNewItem = (all, arg) => {
-    all.push(arg);
-    return all;
-};
+  all.push(arg)
+  return all
+}
 
 _.each(LODASH_METHODS, (method) => {
   SpeckCollection.prototype[method] = function () {
-    const args = _.reduce(arguments, reduceToNewItem, [ this.items ]) ;
+    const args = _.reduce(arguments, reduceToNewItem, [ this.items ])
 
-    const result = _[method].apply(_, args);
+    const result = _[method].apply(_, args)
 
-    if ( !_.isArray(result) ) { return result; }
+    if (!_.isArray(result)) return result
 
-    return new this.constructor(result);
+    return new this.constructor(result)
   }
-});
+})
 
-export default SpeckCollection;
+module.exports = SpeckCollection

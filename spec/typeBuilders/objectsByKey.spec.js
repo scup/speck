@@ -1,22 +1,22 @@
-import { expect } from 'chai';
+const { expect } = require('chai')
 
-import objectsByKey from '../../src/typeBuilders/objectsByKey';
+const objectsByKey = require('typeBuilders/objectsByKey')
 
-import { ChildrenEntity, ProductEntity } from '../fixtures/fakerClasses';
+const { ChildrenEntity } = require('../fixtures/fakerClasses')
 
 describe('objectsByKey', () => {
   it('creates the type based on parameter', () => {
-    const newType = objectsByKey(ChildrenEntity);
+    const newType = objectsByKey(ChildrenEntity)
 
-    expect(newType.type).to.equal(ChildrenEntity);
-  });
+    expect(newType.type).to.equal(ChildrenEntity)
+  })
 
   it('builds objects by its type', () => {
-    const newType = objectsByKey(ChildrenEntity);
+    const newType = objectsByKey(ChildrenEntity)
 
-    const result = newType.builder({ sample: {}, other: {} });
+    const result = newType.builder({ sample: {}, other: {} })
 
-    expect(result.sample.constructor).to.equal(ChildrenEntity);
-    expect(result.other.constructor).to.equal(ChildrenEntity);
-  });
-});
+    expect(result.sample.constructor).to.equal(ChildrenEntity)
+    expect(result.other.constructor).to.equal(ChildrenEntity)
+  })
+})

@@ -1,14 +1,13 @@
-const objectsByKey = (Type) => {
+module.exports = function objectsByKey (Type) {
   return {
     type: Type,
     validator: Type.SCHEMA,
-    builder: (data) => {
-      return Object.keys(data).reduce((result, key) => {
-        result[key] = new Type(data[key]);
-        return result;
-      },{})
+    builder (data) {
+      function buildTypeWithDataForKeys (result, key) {
+        return Object.assign({}, result, { [key]: new Type(data[key]) })
+      }
+
+      return Object.keys(data).reduce(buildTypeWithDataForKeys, {})
     }
   }
-};
-
-export default objectsByKey;
+}
