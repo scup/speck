@@ -18,14 +18,15 @@ This package let you create entities with schema validation based on React PropT
 
 #### Sample Entities
 ```javascript
-import { PropTypes } from 'react';
-import Speck from 'speck-entity';
+const Joi = require('joi')
+const joiAdapter = require('validatorAdapters')('joi', Joi)
+const Speck = require('speck-entity')
 
 class MyEntity extends Speck {
   static SCHEMA = {
-    field: PropTypes.string,
+    field: joiAdapter(Joi.string()),
     otherField: {
-      validator: PropTypes.number,
+      validator: joiAdapter(Joi.number()),
       defaultValue: 10
     }
   }
@@ -34,7 +35,7 @@ class MyEntity extends Speck {
 class FatherEntity extends Speck {
   static SCHEMA = {
     children: {
-      validator: PropTypes.arrayOf(PropTypes.instanceOf(MyEntity)),
+      validator: joiAdapter(Joi.array().items(Joi.object().type(MyEntity)))
       type: MyEntity
     }
   }
@@ -136,10 +137,10 @@ To understand the validators [React PropTypes](https://facebook.github.io/react/
 ```javascript
   class FakeEntityWithExcludeContext extends Speck {
       static SCHEMA = {
-          id: PropTypes.number.isRequired,
-          requiredProp1: PropTypes.number.isRequired,
-          requiredProp2: PropTypes.number.isRequired,
-          requiredProp3: PropTypes.number.isRequired
+          id: joiAdapter(Joi.number().required()),
+          requiredProp1: joiAdapter(Joi.number().required()),
+          requiredProp2: joiAdapter(Joi.number().required()),
+          requiredProp3: joiAdapter(Joi.number().required())
       }
 
       static CONTEXTS = {
@@ -175,8 +176,8 @@ To understand the validators [React PropTypes](https://facebook.github.io/react/
   ```javascript
     class Entity extends Speck {
       static SCHEMA = {
-        id: PropTypes.number.isRequired,
-        requiredProp1: PropTypes.number.isRequired
+        id: joiAdapter(Joi.number().required()),
+        requiredProp1: joiAdapter(Joi.number().required())
       }
 
       static CONTEXTS = {
