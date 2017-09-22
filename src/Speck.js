@@ -14,7 +14,7 @@ const createGetterAndSetter = function (instance, field) {
 }
 
 class Speck {
-  constructor (data) {
+  constructor (data = {}) {
     Object.defineProperty(this, 'schema', {
       value: this.constructor.SCHEMA,
       enumerable: false
@@ -26,17 +26,20 @@ class Speck {
     })
 
     Object.defineProperty(this, 'childrenEntities', {
-      value: Object.keys(this.constructor.SCHEMA).filter((field) => !!this.constructor.SCHEMA[field].type),
+      value: Object.keys(this.constructor.SCHEMA).filter(this.__fieldHasType.bind(this)),
       enumerable: false
     })
 
-    this.errors = {}
     Object.defineProperty(this, 'data', {
-      value: this._mergeDefault(data || {}),
+      value: this._mergeDefault(data),
       enumerable: false
     })
 
     this._validate()
+  }
+  
+  __fieldHasType (field) {
+    return !!this.constructor.SCHEMA[field].type
   }
 
   __initFieldValue (field, data) {
@@ -78,23 +81,21 @@ class Speck {
   }
 
   __validateField (field) {
-    const validator = typeof (this.schema[field]) === 'function'
-                        ? this.schema[field]
-                        : this.schema[field].validator
+    const validator = 
+      typeof (this.schema[field]) === 'function' ? this.schema[field] : this.schema[field].validator
 
-    const error = validator(this.data, field, this.constructor.name + 'Entity')
-
-    if (error) {
-      this.errors[field] = { errors: [error.message || error] }
-    }
+    return validator(this.data, field, this.constructor.name + 'Entity')
   }
 
   _validate () {
     this.errors = {}
 
-    let field
-    for (field in this.schema) {
-      this.__validateField(field)
+    for (let field in this.schema) {
+      const error = this.__validateField(field)
+      
+      if (error) {
+        this.errors[field] = { errors: [error.message || error] }
+      }
     }
     this.valid = Object.keys(this.errors).length === 0
 
@@ -170,8 +171,7 @@ class Speck {
     if (this.contexts[context].fields) {
       Object.keys(this.contexts[context].fields).forEach((field) => {
         const result = this.contexts[context].fields[field](this, field, this.constructor.name)
-        if (result) contextErrors[field] = {errors: result}
-        else delete contextErrors[field]
+        result && (contextErrors[field] = { errors: result })
       })
     }
 
