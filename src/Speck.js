@@ -1,14 +1,27 @@
-const { clone, get, isNil, isFunction } = require('lodash')
+const { clone, get, isNil, isFunction, noop } = require('lodash')
 
-const createGetterAndSetter = function (instance, field) {
+function applyAfterSetHook (field, data, afterSetHook) {
+  const newData = afterSetHook(data, field)
+  typeof newData === 'object' && Object.assign(data, newData)
+}
+
+function createGetterAndSetter (instance, field) {
+  const schemaField = instance.schema[field]
+  
+  const afterSet = get(schemaField, 'hooks.afterSet')
+  const afterSetHook = typeof afterSet === 'function' ? applyAfterSetHook : noop
+    
   return {
-    set: function (value) {
-      if (instance.data[field] !== value) {
-        instance.data[field] = value
+    set (newValue) {
+      if (instance.data[field] !== newValue) {
+        instance.data[field] = newValue
+        
+        afterSetHook(field, instance.data, afterSet)
+        
         return instance._validate()
       }
     },
-    get: function () { return instance.data[field] },
+    get () { return instance.data[field] },
     enumerable: true
   }
 }
