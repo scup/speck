@@ -1,6 +1,6 @@
 {
   "name": "speck-entity",
-  "version": "0.1.9",
+  "version": "0.2.0",
   "description": "Domain entities with reactive validation",
   "main": "lib/index.js",
   "scripts": {
