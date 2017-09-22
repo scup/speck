@@ -7,17 +7,17 @@ function applyAfterSetHook (field, data, afterSetHook) {
 
 function createGetterAndSetter (instance, field) {
   const schemaField = instance.schema[field]
-  
+
   const afterSet = get(schemaField, 'hooks.afterSet')
   const afterSetHook = typeof afterSet === 'function' ? applyAfterSetHook : noop
-    
+
   return {
     set (newValue) {
       if (instance.data[field] !== newValue) {
         instance.data[field] = newValue
-        
+
         afterSetHook(field, instance.data, afterSet)
-        
+
         return instance._validate()
       }
     },
@@ -50,7 +50,7 @@ class Speck {
 
     this._validate()
   }
-  
+
   __fieldHasType (field) {
     return !!this.constructor.SCHEMA[field].type
   }
@@ -94,7 +94,7 @@ class Speck {
   }
 
   __validateField (field) {
-    const validator = 
+    const validator =
       typeof (this.schema[field]) === 'function' ? this.schema[field] : this.schema[field].validator
 
     return validator(this.data, field, this.constructor.name + 'Entity')
@@ -105,7 +105,7 @@ class Speck {
 
     for (let field in this.schema) {
       const error = this.__validateField(field)
-      
+
       if (error) {
         this.errors[field] = { errors: [error.message || error] }
       }
