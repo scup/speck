@@ -5,14 +5,14 @@ cache:
   npm: true
   directories:
   - node_modules/
-script: npm run coverage
+script: npm run validate
 after_script:
 - git config credential.helper "store --file=.git/credentials"
 - echo "https://${GH_TOKEN}:@github.com" > .git/credentials
 - git config --global user.email "infra@scup.com"
 - git config --global user.name "Travis CI"
 - rm -rf lib
-- npm run build
+- npm run prepublish
 - bin/commit_lib_files.sh
 env:
   global:

@@ -200,3 +200,34 @@ To understand the validators [React PropTypes](https://facebook.github.io/react/
     console.log(entity.errors.requiredProp1); // undefined
     console.log(contextValidated.requiredProp1); // { errors: [Error: Error -1] }
   ```
+
+  ### Hooks
+  ```javascript
+  class EntityWithHook extends Speck {
+      static SCHEMA = {
+          fieldWithHook: {
+            validator: joiAdapter(Joi.number()),
+            hooks: {
+              afterSet(data, fieldName) {
+                // data is the whole data of the instance
+                // fieldName the current fieldName
+                // DO WHATEVER YOU WANT
+              }
+            }
+          },
+          anotherFieldWithHook: {
+            validator: joiAdapter(Joi.number()),
+            hooks: {
+              afterSet(data, fieldName) {
+                return { anotherField: data[fieldName] * 2 } // if the afterSet hook returns an object is merged to data
+              }
+            }
+          },
+          anotherField: joiAdapter(Joi.number()),
+      }
+  }
+
+  const myEntity = new EntityWithHook({ fieldWithHook: 'foo', anotherFieldWithHook: 'bar', anotherField: null });
+
+  myEntity.anotherFieldWithHook = 10 //according to the after set hook anotherField newValue will be 20
+```

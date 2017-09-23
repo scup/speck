@@ -1,6 +1,6 @@
 {
   "name": "speck-entity",
-  "version": "0.1.9",
+  "version": "0.2.0",
   "description": "Domain entities with reactive validation",
   "main": "lib/index.js",
   "scripts": {
@@ -9,8 +9,8 @@
     "coverage": "nyc npm test",
     "lint": "standard -v \"src/**/*.js\" \"spec/**/*.js\"",
     "lint:fix": "standard -v --fix \"src/**/*.js\" \"spec/**/*.js\"",
-    "build": "babel src --out-dir lib",
-    "prepublish": "npm run build"
+    "prepublish": "babel src --out-dir lib",
+    "validate": "npm run lint && npm run coverage"
   },
   "nyc": {
     "branches": 95,
