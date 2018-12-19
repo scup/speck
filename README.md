@@ -92,7 +92,7 @@ console.log(fatherInstance.children[1].toJSON());
 //{ field: 'B', otherField: 3 }
 ```
 #### Builder
-When you need to create objects with custom verification like 
+When you need to create objects with custom verification like
 ```javascript
     const elementList = {
         elements: [{
@@ -111,15 +111,21 @@ class ElementList extends Speck {}
 ElementList.SCHEMA = {
   elements: {
     validator: noop,
-    builder: (dataList) => dataList.map(data => {
-      if (data.type === 'product') return new ProductEntity(data);
+    builder: (dataList, Type, dependencies) => dataList.map(data => {
+      if (data.type === 'product') return new ProductEntity(data, dependencies);
       if (data.type === 'default') return new FakeEntityWithBoolean(data);
     })
   }
 };
 ```
-By defining builder you tell Speck Entity that you take the responsibility of instansitating and 
-returning a new object of the type which suits you the best. 
+And use it like:
+```javascript
+new ElementList(elementList, someDependency)
+```
+(note that you can pass custom dependencies to your child entities and latter access them on the builder)
+
+By defining builder you tell Speck Entity that you take the responsibility of instansitating and
+returning a new object of the type which suits you the best.
 This is a powerful concept as it lets users dynamically create new types on the fly.
 #### Clean unexpected values
 ```javascript
