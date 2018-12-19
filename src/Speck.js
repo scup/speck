@@ -27,7 +27,7 @@ function createGetterAndSetter (instance, field) {
 }
 
 class Speck {
-  constructor (data = {}, dependencies) {
+  constructor (data = {}, ...dependencies) {
     Object.defineProperty(this, 'schema', {
       value: this.constructor.SCHEMA,
       enumerable: false
@@ -44,7 +44,7 @@ class Speck {
     })
 
     Object.defineProperty(this, 'data', {
-      value: this._mergeDefault(data, dependencies),
+      value: this._mergeDefault(data, ...dependencies),
       enumerable: false
     })
 
@@ -66,14 +66,14 @@ class Speck {
     return isFunction ? defaultValue : clone(this.schema[field].defaultValue)
   }
 
-  _mergeDefault (data, dependencies) {
+  _mergeDefault (data, ...dependencies) {
     const newData = {}
     let field
     for (field in this.schema) {
       newData[field] = this.__initFieldValue(field, data)
 
       if (this.schema[field].type || this.schema[field].builder) {
-        newData[field] = this.applyEntityConstructor(this.schema[field], newData[field], dependencies)
+        newData[field] = this.applyEntityConstructor(this.schema[field], newData[field], ...dependencies)
       }
 
       Object.defineProperty(this, field, createGetterAndSetter(this, field))
@@ -132,11 +132,11 @@ class Speck {
     return children.reduce(this._includeChildErrors.bind(this, field), errors)
   }
 
-  applyEntityConstructor (field, data, dependencies) {
+  applyEntityConstructor (field, data, ...dependencies) {
     const Type = field.type
 
     if (isFunction(field.builder)) {
-      return field.builder(data, Type, dependencies)
+      return field.builder(data, Type, ...dependencies)
     }
 
     if (!data) return

@@ -74,7 +74,7 @@ ChildrenEntity.SCHEMA = {
 }
 
 class ChildrenWithDependency extends Speck {
-  constructor(props, dependencies) {
+  constructor (props, dependencies) {
     super(props, dependencies)
 
     Object.assign(this, dependencies)
