@@ -11,8 +11,10 @@ const {
   ProductEntity,
   Validatable,
   ChildrenEntity,
+  ChildrenWithDependency,
   FatherEntity,
   FatherWithObjectEntity,
+  FatherWithDependencies,
   FakeEntityWithExcludeContext,
   FakeEntityWithIncludeContext,
   FakeEntityWithCustomValidationWithContext,
@@ -170,6 +172,17 @@ describe('Speck', () => {
 
       expect(father.children.content.constructor).to.equal(ChildrenEntity)
       expect(father.children.tweet.constructor).to.equal(ChildrenEntity)
+    })
+
+    it('builds automatically using the parameter builder and passing dependencies', () => {
+      const father = new FatherWithDependencies({
+        children: { foo: 'bar' }
+      }, {
+        dependency: true
+      })
+
+      expect(father.children.constructor).to.equal(ChildrenWithDependency)
+      expect(father.children.dependency).to.equal(true)
     })
 
     it('includes errors of children', () => {
