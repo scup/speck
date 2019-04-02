@@ -73,6 +73,17 @@ ChildrenEntity.SCHEMA = {
   foo: fooValidator
 }
 
+class ChildrenWithDependency extends Speck {
+  constructor (props, dependencies) {
+    super(props, dependencies)
+
+    Object.assign(this, dependencies)
+  }
+}
+ChildrenWithDependency.SCHEMA = {
+  foo: fooValidator
+}
+
 FakeEntityWithDefault.SCHEMA = {
   [defaultField]: {
     validator: noop,
@@ -122,6 +133,17 @@ FatherWithObjectEntity.SCHEMA = {
         result[key] = new Type(data[key])
         return result
       }, {})
+    }
+  }
+}
+
+class FatherWithDependencies extends Speck { }
+FatherWithDependencies.SCHEMA = {
+  children: {
+    type: ChildrenWithDependency,
+    validator: alwaysTruth,
+    builder: (data, Type, dependencies) => {
+      return new Type(data, dependencies)
     }
   }
 }
@@ -176,8 +198,10 @@ Object.assign(exports, {
   ProductEntity,
   Validatable,
   ChildrenEntity,
+  ChildrenWithDependency,
   FatherEntity,
   FatherWithObjectEntity,
+  FatherWithDependencies,
   FakeEntityWithExcludeContext,
   FakeEntityWithIncludeContext,
   FakeEntityWithCustomValidationWithContext,
